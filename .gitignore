@@ -4,4 +4,4 @@
 *.webprj
 *.swp
 config.php
-nbproject
+nbproject/
