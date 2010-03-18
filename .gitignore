@@ -1,7 +1,7 @@
 *~
 *.session
-.htaccess
 *.webprj
 *.swp
 config.php
+code/.htaccess
 nbproject/*
