@@ -1,5 +1,6 @@
 *~
 *.session
+.htaccess
 *.webprj
 *.swp
 config.php
