@@ -26,7 +26,7 @@ function isAdmin(){
  * @return Grupo do usuário
  */
 function userGroup(){
-    return (isset($_SESSION['grupo']) AND $_SESSION['grupo'])?$_SESSION['grupo']:'';
+    return ( isset( $_SESSION['grupo'] ) AND $_SESSION['grupo'] ) ? $_SESSION['grupo'] : '';
 }
 
 /**
@@ -58,4 +58,31 @@ function loadTemplate ($file, $dados)
  */
 function session_load($sessao){
     return isset( $_SESSION[$sessao] ) ? $_SESSION[$sessao] : '';
+}
+
+/**
+ * the_msg Imprime a mensagem que estiver na sessão caso exista
+ * @param string $type Tipo de mensagem @see /admin/library/message.php na linha 9
+ * @return string $output Texto da(s) mensagem(ns) inseridas com add() @see function add()
+ * @author ldmotta
+ */
+function the_msg($type = null) {
+    $msg = new Messages;
+    if ($msg->sum($type) > 0) {
+        $messages = $msg->get($type);
+        // display all messages of the type
+        if (is_array($messages)) {
+            $output = '';
+            foreach ($messages as $type => $msgs) {
+                if (count($msgs) > 0) {
+                    $output .= '<p class="msg ' . $type . '">';
+                    foreach ($msgs as $message) {
+                        $output .= $message;
+                    }
+                    $output .= '</p>';
+                }
+            }
+        }
+        echo $output;
+    }
 }

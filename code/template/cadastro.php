@@ -1,9 +1,15 @@
-<form action="<?php echo BASE_URL ?>/cadastro" method="POST">
+<?php include 'header.php';?>
+
+<h1><?php echo $titulo;?></h1>
+
+<?php the_msg($msg = null);?>
+
+<form action="<?php echo BASE_URL . 'cadastro' ;?>" method="POST">
     <fieldset>
         <legend>Dados do usuário</legend>
         <label>
             <span>Nome</span>
-            <input type="text" name="nome" />
+            <input type="text" name="nome" value="" />
         </label>
         <label>
             <span>Email</span>
@@ -25,3 +31,4 @@
     </fieldset>
 </form>
 
+<?php include 'footer.php';?>

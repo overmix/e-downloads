@@ -8,3 +8,4 @@
   <title><?php echo $this->titulo ?></title>
 </head>
 <body>
+    <ul><li><a href="<?php echo BASE_URL . 'cadastro'; ?>">Cadastre-se</a></li></ul>
