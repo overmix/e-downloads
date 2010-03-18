@@ -163,6 +163,7 @@ class Model
 
     public function save($data, array $where = array(), $table = null)
     {
+        echo "<pre>"; print_r($this->_key); echo "</pre>"; die('fim');
         if (isset($data[$this->_key])) {
             $this->update($data, $where, $table);
         } else {

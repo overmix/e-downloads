@@ -72,3 +72,63 @@ function app($urls, $url=null, $method = null)
     }
     ice_error(404, 'Page Not Found', $method);
 }
+
+#Carrega automaticamente os controles conforme são instanciados
+function ice_autoload($class, $routes){
+
+	if(is_array($routes)):
+
+		$path_info = preg_replace('@/admin/?@', '', $_SERVER['PATH_INFO']);
+		$path_info = preg_replace('@(s/?){1}$@', '/', $path_info);
+
+		foreach($routes as $regex => $className):
+			if($className == $class):
+				$parsePath = explode('/',$path_info);
+				$controleArquivo = trim(strtolower($parsePath[0]));
+				$ultimaLetra = substr($parsePath[0], -1);
+
+				$cleaned_parse = array_filter($parsePath);
+				$aKeys = array_keys($cleaned_parse);
+
+				$controleArquivo = $aKeys ? $parsePath[$aKeys[0]] : "";
+
+				#Desplurariza a palavra caso ela esteja no plural
+				if($ultimaLetra == 's')
+					$controleArquivo = substr($parsePath[0], 0, -1);
+
+				$path_controller = 'app/controller/' . $controleArquivo . '.php';
+
+				if($controleArquivo == ""):
+					require_once('app/controller/home.php');
+				elseif(file_exists($path_controller)):
+					require_once($path_controller);
+				else:
+					ice_error(501, "Controller ({$controleArquivo}) Not Found");
+				endif;
+
+			endif;
+		endforeach;
+	endif;
+}
+
+#Carrega helpers e librarys
+function ice_autoload_componnets($load){
+	if(is_array($load)):
+		foreach($load as $component => $array_compoents):
+			foreach($array_compoents as $comp_name):
+				$component_singular = substr($component, 0, -1);
+
+				$path_component_pub = "app/{$component_singular}/{$comp_name}.php";
+				$path_component_ice = "ice/{$component_singular}/{$comp_name}.php";
+
+				if(file_exists($path_component_pub)):
+					include_once($path_component_pub);
+				elseif(file_exists($path_component_ice)):
+					include_once($path_component_ice);
+				else:
+					ice_error('501', ucFirst($component_singular) . ' <strong> ' . $comp_name . '</strong> Not Found');
+				endif;
+			endforeach;
+		endforeach;
+	endif;
+}
