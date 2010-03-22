@@ -3,7 +3,7 @@
 class Home extends Controller {
     function Home() {
         parent::Controller();
-        $this->load->library('lightbox');
+        //$this->load->library('lightbox');
         //$this->load->library('validation');
         //$this->load->model('user');
 
@@ -24,6 +24,15 @@ class Home extends Controller {
         $data = $this->getDados();
         $this->load->view('home', $data);
     }
+
+    function getDados() {
+        $data = array(
+                'page_title'=>'e-Downloads',
+                'titulo'=>'Home',
+        );
+        return $data;
+    }
+
 }
 
 /* End of file welcome.php */
