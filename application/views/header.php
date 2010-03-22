@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="pt-BR">
     <head>
         <title><?=$page_title;?></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>skin/css/style.css" media="screen" charset="utf-8" />
         <script type="text/javascript" src="<?=base_url();?>skin/js/jquery-1.3.2.min.js"></script>
         <script type="text/javascript" language="javascript" src="<?=base_url();?>skin/js/functions.js"></script>
@@ -18,5 +19,8 @@
         });
         </script>
     </head>
-
     <body>
+        <ul>
+            <li><?php echo anchor('cadastro', 'Cadastre-se', array('title'=>'Cadastre-se'));?></li>
+            <li><?php echo anchor('inicio', 'Login', array('title'=>'Login')); ?></li>
+        </ul>

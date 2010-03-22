@@ -214,6 +214,7 @@ jQuery.fn.extend({
     }
 });
 
+/*
 $(document).ready(function(){	
 	$("#slider").easySlider({
 		auto: true, 
@@ -223,3 +224,4 @@ $(document).ready(function(){
 		pause:4000
 	});
 });
+*/
