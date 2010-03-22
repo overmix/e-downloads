@@ -19,7 +19,7 @@ class Auth {
      * @return boolean
      */
     function logged () {
-        return isset($this->ci->session->userdata['email']);
+        return (bool)(isset($this->ci->session->userdata['email']) AND $this->ci->session->userdata['email']);
     }
 
     /**

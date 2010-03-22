@@ -244,7 +244,7 @@ function defineFunc($funcao) {
  */
 function isAdmin(){
     $ci =& get_instance();
-    $query = $ci->db->get_where( 'usuarios', array('id'=>$ci->user->userID(), 'group'=>1));
+    $query = $ci->db->get_where( 'usuarios', array('id_usuario'=>$ci->user->userID(), 'group'=>1));
     return (bool)$query->num_rows();
 }
 

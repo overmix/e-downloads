@@ -30,7 +30,7 @@ class User extends Model {
     function updateUser() {
         $this->dadosUser = is_array(func_get_arg(0))?func_get_arg(0):func_get_args();
         $this->db->update('usuarios', $this->dadosUser, "email = '".$this->auth->userMail()."'" );
-        $this->session->set_userdata('email', $this->dadosUser['email']);
+        //$this->session->set_userdata('email', $this->dadosUser['email']);
         return $this->db->affected_rows();
     }
 
@@ -47,13 +47,13 @@ class User extends Model {
 
     function getUserDataByEmail($email) {
         //$this->db->join('imagens', 'imagens.id_usuario = usuarios.id');
-        return $this->db->getwhere('usuarios', array('email'=>$email))->row_array('id');
+        return $this->db->getwhere('usuarios', array('email'=>$email))->row_array('id_usuario');
         //echo "<pre>"; print_r($return); echo "</pre>"; die("fim");
     }
 
     function getUserDataById($id) {
         //$this->db->join('imagens', 'imagens.id_usuario = usuarios.id');
-        return $this->db->getwhere('usuarios', array('id'=>$id))->row_array('id');
+        return $this->db->getwhere('usuarios', array('id_usuarios'=>$id))->row_array('id');
         //echo "<pre>"; print_r($return); echo "</pre>"; die("fim");
     }
 
@@ -126,7 +126,7 @@ class User extends Model {
     }
 
     function getUserIdByEmail($email) {
-        $this->db->select('id');
+        $this->db->select('id_usuario');
         return $this->db->getwhere('usuarios', array('email'=>$email))->row()->id;
     }
 
@@ -153,11 +153,11 @@ class User extends Model {
     }
 
     function userID() {
-        $this->db->select('id');
+        $this->db->select('id_usuario');
         $email = $this->session->userdata('email')?$this->session->userdata('email'):"";
         $query = $this->db->getwhere('usuarios', array('email'=>$email));
         if ( $query->num_rows() ) {
-            return $query->row()->id;
+            return $query->row()->id_usuario;
         }
         return false;
     }
@@ -192,7 +192,7 @@ class User extends Model {
      */
     function reprovaImg($id_media) {
         $data = array('status'=>0);
-        $this->db->where('id', $id_media);
+        $this->db->where('id_usuario', $id_media);
         return $this->db->update('imagens', $data);
     }
     
@@ -203,7 +203,7 @@ class User extends Model {
      */
     function setCommonToAdmin($user_id=0) {
         $data = array('group'=>1);
-        $this->db->where('id', $user_id);
+        $this->db->where('id_usuario', $user_id);
         return $this->db->update('usuarios', $data);
     }
 
@@ -214,7 +214,7 @@ class User extends Model {
      */
     function setAdminToCommon($user_id=0) {
         $data = array('group'=>0);
-        $this->db->where('id', $user_id);
+        $this->db->where('id_usuario', $user_id);
         return $this->db->update('usuarios', $data);
     }
 
@@ -225,7 +225,7 @@ class User extends Model {
      */
     function canceladmin($user_id=0) {
         $data = array('group'=>0);
-        $this->db->where('id', $user_id);
+        $this->db->where('id_usuario', $user_id);
         return $this->db->update('usuarios', $data);
     }
 
@@ -334,7 +334,7 @@ class User extends Model {
     function atualizaPontos ($dados) {
         $voto = $this->getVotosById($dados['id']);
         $pontos = $this->getPontosById($voto['img_id']);
-        $this->db->where('id',$voto['img_id']);
+        $this->db->where('id_usuario',$voto['img_id']);
         $pontos = array('pontos'=>(int)$pontos + (int)$voto['votos']);
         $this->db->update('imagens', $pontos);
     }
