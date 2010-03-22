@@ -237,10 +237,8 @@ class User extends Model {
     }
 
     function getAllMedia($where = null, $limit=null) {
-        $this->db->orderby("atualizado", "desc");
-        $this->db->join('usuarios', 'imagens.id_usuario = usuarios.id')
-                ->select('usuarios.nome, imagens.*');
-        $return = $this->db->getwhere('imagens', $where, $limit)->result_array();
+        $this->db->orderby("data", "desc");
+        $return = $this->db->getwhere('produtos', $where, $limit)->result_array();
         if (!$return) {
             return array();
         }

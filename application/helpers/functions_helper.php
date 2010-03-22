@@ -298,3 +298,23 @@ function clearArr($arr)
     }
     return $new_arr;
 }
+
+/**
+ * Lista todos os arquivos em uma pasta passada em $path
+ * @param string $path Caminho completo dos arquivos que serão listados
+ */
+function getFilesByPath($path='')
+{
+    $iterator = new DirectoryIterator($path);
+    $files = array();
+    foreach ( $iterator as $entry ) {
+        $files[] = $entry->getFilename();
+    }
+    return $files;
+}
+
+function getAllMedia()
+{
+    $ci =& get_instance();
+    return base_url().$ci->config->item('upload_path'). $media['media_category']."/". $media['id_usuario'] .'/'. $media['media_url'];
+}
