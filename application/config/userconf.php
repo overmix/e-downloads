@@ -7,4 +7,4 @@ $config['max_image']    = '3';
 $config['max_video']    = '1';
 $config['upload_path']  = 'uploads/';
 $config['xls_path']     = 'uploads/xlsfiles/';
-$config['admin_email']  = 'diego@visie.com.br';
+$config['admin_email']  = 'ldmotta@visie.com.br';

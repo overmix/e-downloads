@@ -55,7 +55,6 @@ class Inicio extends Controller {
             }
             $this->messages->add("Usuário ou senha inválida!");
 		}
-        echo "<pre>"; print_r($this->validation->error_string); echo "</pre>"; die('fim');
         $this->load->view('inicio', $data);
         return false;
 	}

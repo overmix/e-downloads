@@ -31,7 +31,7 @@ class Auth {
         $this->ci =& get_instance();
         $this->clearCache();
         if (!$this->logged()) {
-            $this->ci->messages->add('Usuário não cadastrado. Efetue o cadastro para poder enviar seu trabalho.', 'warning');
+            $this->ci->messages->add('Usuário não cadastrado.', 'warning');
             redirect ('cadastro');
             die(); // Morre para não ter problemas com o redirecionamento
         }

@@ -21,6 +21,7 @@
     </head>
     <body>
         <ul>
+            <li><?php echo anchor('home', 'Home', array('title'=>'Home'));?></li>
             <li><?php echo anchor('cadastro', 'Cadastre-se', array('title'=>'Cadastre-se'));?></li>
             <li><?php echo anchor('inicio', 'Login', array('title'=>'Login')); ?></li>
             <li><?php echo anchor('inicio/sair', 'Sair', array('title'=>'Sair do sistema'));?></li>
