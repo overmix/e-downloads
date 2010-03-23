@@ -67,6 +67,7 @@ class Product extends Model {
     {
         if(!$id) return;
         $ci =& get_instance();
+        $ci->load->model('user');
         $where = array(
             'id_produto'=>$id,
             'id_usuario' =>  $ci->user->getUserIdByEmail($this->auth->userMail()),
@@ -75,5 +76,21 @@ class Product extends Model {
         ->where($where)
         ->update('pedidos');
         return $ci->db->affected_rows();
+    }
+
+    function getPedidoById($pedido)
+    {
+        $ci =& get_instance();
+        $ci->load->model('user');
+        if(!$id) return;
+        $where = array(
+            'id_usuario' =>  $ci->user->getUserIdByEmail($this->auth->userMail()),
+            'produtos.id_pedido' => $pedido,
+        );
+        $this->db->select('produtos.id_produto, produtos.arquivo')
+            ->join('produtos', 'produtos.id_produto = pedidos.id_produto');
+
+        $return = $this->db->getwhere('pedidos', $where)->row();
+        return $return ? $return->id_pedido : FALSE;
     }
 }
