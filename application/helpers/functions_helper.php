@@ -13,15 +13,74 @@ function logged () {
  * @param String $media = nome do arquivo dentro da url uploads
  * @return String
  */
-function getMediaUrlById($id) {
+function getProductUrlById($id) {
     $ci =& get_instance();
     if(!$id) return;
-    $media = getMediaById($id);
-    if($media['media_type']==1)   // Se for foto
-        return base_url().$ci->config->item('upload_path'). $media['media_category']."/". $media['id_usuario'] .'/'. $media['media_url'];
-    else
-        return $media['media_url'];
+    $product = getProductById($id);
+    return base_url().$ci->config->item('upload_path') . 'image/' . $product['image'];
 }
+
+/**
+ * retorna a url absoluta da miniatura de uma imagem ou vídeo gravado pelo usuário
+ * @param int $id
+ * @return string
+ */
+function getThumbUrlById($id) {
+    $ci =& get_instance();
+    if(!$id) return;
+    $product = getProductById($id);
+    $thumb = imgToThumb($product['image']);
+    return base_url() . $ci->config->item('upload_path') . "image/" . $thumb;
+}
+
+/**
+* seleciona o nome da imagem/url do vídeo no banco de dados
+* @param int $id
+* @return array ( tipo(imagem ou vídeo), nome da imagem/url do vídeo )
+*/
+function getProductById($id) {
+    if(!$id) return;
+    $ci =& get_instance();
+    return $ci->db->getwhere('produtos', array('id_produto' => $id))->row_array();
+}
+
+/**
+ * converte a nomenclatura da imagem para nomenclatura dos thumbs "imagem_thumb.ext"
+ * @param string $filename
+ * @return string
+ */
+function imgToThumb($filename) {
+    $ext = getExtension($filename);
+    return str_replace($ext, '', $filename) . "_thumb" . $ext;
+}
+
+/**
+ * retorna a extensão do arquivo passado em $filename
+ * @param string $filename
+ * @return string
+ */
+function getExtension($filename) {
+    $x = explode('.', $filename);
+    return '.'.end($x);
+}
+
+/**
+ * getDescription Retorna a descrição do produto cortada ou inteira, dependendo do valor de $length
+ * @param int $id Id do produto
+ * @param int $length Tamanho da string de retorno
+ * @return string Descrição do produto cortada ou inteira
+ */
+function getDescription($id, $length=0)
+{
+    $ci =& get_instance();
+    if(!$id) return;
+    $product = getProductById($id);
+    $description = $length ? trim(substr($product['descricao'], 0, $length)) .'...' : $product['descricao'];
+    return $description;
+}
+/*---------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------------------------------*/
 
 /**
  * getReminders Retorna os os dados de todas as pessoas que assinaram o lemtrete do evento
@@ -47,22 +106,6 @@ function atualizaStatusLembrete($id)
 }
 
 
-/**
- * retorna a url absoluta da miniatura de uma imagem ou vídeo gravado pelo usuário
- * @param int $id
- * @return string
- */
-function getThumbUrlById($id) {
-    $ci =& get_instance();
-    if(!$id) return;
-    $media = getMediaById($id);
-    if($media['media_type']==1) {
-        $thumb = imgToThumb($media['media_url']);
-        return base_url().$ci->config->item('upload_path').$media['media_category']."/".$media['id_usuario']."/".$thumb;
-    }else {
-        return getVideoThumbUrl($media['media_url']);
-    }
-}
 
 /**
  * retorna o caminho absoluto da imagem no servidor
@@ -71,7 +114,7 @@ function getThumbUrlById($id) {
  */
 function getMediaPathById($id) {
     if(!$id) return;
-    $media = getMediaById($id);
+    $media = getProductById($id);
     return uploadPath().$media['media_category']."/".$media['id_usuario']."/".$media['media_url'];
 }
 
@@ -82,19 +125,9 @@ function getMediaPathById($id) {
  */
 function getThumbPathById($id) {
     if(!$id) return;
-    $media = getMediaById($id);
+    $media = getProductById($id);
     $thumb = imgToThumb($media['media_url']);
     return uploadPath().$media['media_category']."/".$media['id_usuario']."/".$thumb;
-}
-
-/**
- * converte a nomenclatura da imagem para nomenclatura dos thumbs "imagem_thumb.ext"
- * @param string $filename
- * @return string
- */
-function imgToThumb($filename) {
-    $ext = getExtension($filename);
-    return str_replace($ext, '', $filename) . "_thumb" . $ext;
 }
 
 /**
@@ -106,28 +139,6 @@ function getVideoThumbUrl($hRef) {
     $videoUrl = explode('=', $hRef);
     $imgUrl = str_replace('watch?v', 'vi/', str_replace('www', 'img', $videoUrl[0])).$videoUrl[1].'/1.jpg';
     return $imgUrl;
-}
-
-/**
-* seleciona o nome da imagem/url do vídeo no banco de dados
-* @param int $id
-* @return array ( tipo(imagem ou vídeo), nome da imagem/url do vídeo )
-*/
-function getMediaById($id) {
-    if(!$id) return;
-    $ci =& get_instance();
-    $ci->db->join('usuarios', 'imagens.id_usuario = usuarios.id', 'left');
-    $ci->db->select(array(
-        'imagens.id' ,
-        'imagens.media_type' ,
-        'imagens.media_url' ,
-        'imagens.media_category' ,
-        'imagens.nome_img' ,
-        'imagens.status' ,
-        'imagens.id_usuario' ,
-        'usuarios.nome AS nome_autor' ,
-    ));
-    return $ci->db->get_where('imagens', array('imagens.id'=>$id))->row_array();
 }
 
 /**
@@ -143,15 +154,6 @@ function getMediaById($id) {
     return $ci->db->get_where('imagens', array('id'=>$id))->row_array();
 }
 */
-/**
- * retorna a extensão do arquivo passado em $filename
- * @param string $filename
- * @return string
- */
-function getExtension($filename) {
-    $x = explode('.', $filename);
-    return '.'.end($x);
-}
 
 /**
  * retorna o caminho absoluto da aplicação

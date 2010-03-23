@@ -1,4 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Classe de usuários
+ */
 class User extends Model {
 
     var $dadosUser = array();
@@ -39,6 +42,36 @@ class User extends Model {
         return $this->db->affected_rows();
     }
 
+    function getUserIdByEmail($email='') {
+        $this->db->select('id_usuario');
+        $return = $this->db->get_where('usuarios', array('email'=>(string)$email))->row();
+        return $return ? $return->id_usuario : 0;
+    }
+    
+    /**
+     * Carrega as imagens ou vídeo do usuário
+     * @return Array();
+     */
+    function getUserDownloads() {
+        $where = array(
+            'id_usuario' =>  $this->getUserIdByEmail($this->auth->userMail()),
+            'DATEDIFF(liberado_em, pedido_em) >= ' => 0,    // que tenha sido liberado
+            'DATEDIFF(usar_ate, liberado_em) >= ' => 0,
+            'limite - downloads >=' => 0,
+        );
+        $this->db->select('pedidos.*, produtos.*')
+            ->join('produtos', 'produtos.id_produto = pedidos.id_produto');
+        
+        return $this->db->getwhere('pedidos', $where)->result_array();
+    }
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------------------------------------------------ */
+    
     function insertLembrete() {
         $this->dadosUser = is_array(func_get_arg(0))?func_get_arg(0):func_get_args();
         $this->db->insert('lembrete', $this->dadosUser);
@@ -70,17 +103,6 @@ class User extends Model {
             return array();
         }
         return $return;
-    }
-    /**
-     * Carrega as imagens ou vídeo do usuário
-     * @return Array();
-     */
-    function getUserMediaByType($type) {
-        $where = array(
-                'id_usuario'=>$this->getUserIdByEmail($this->auth->userMail()),
-                'media_type'=>$type,
-        );
-        return $this->db->getwhere('imagens', $where)->result_array();
     }
 
     function getPagedList($type, $limit = 10, $offset = 0, $order_by = 'id') {
@@ -123,11 +145,6 @@ class User extends Model {
         );
         $this->db->where($where);
         return $this->db->getwhere('imagens')->num_rows();
-    }
-
-    function getUserIdByEmail($email) {
-        $this->db->select('id_usuario');
-        return $this->db->getwhere('usuarios', array('email'=>$email))->row()->id;
     }
 
     function checaUser($where) {
@@ -234,15 +251,6 @@ class User extends Model {
     }
     function allowVideo() {
         return ($this->user->countUserMediaByType(2) < (int)$this->config->item('max_video'));
-    }
-
-    function getAllMedia($where = null, $limit=null) {
-        $this->db->orderby("data", "desc");
-        $return = $this->db->getwhere('produtos', $where, $limit)->result_array();
-        if (!$return) {
-            return array();
-        }
-        return $return;
     }
 
     function getRecentMedia($limit=null) {
