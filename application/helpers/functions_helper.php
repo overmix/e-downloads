@@ -6,7 +6,7 @@
  */
 function logged () {
     $ci =& get_instance();
-    return (bool)isset($ci->session->userdata['email']);
+    return (bool)(isset($ci->session->userdata['email']) AND $ci->session->userdata['email']);
 }
 /**
  *
@@ -78,6 +78,27 @@ function getDescription($id, $length=0)
     $description = $length ? trim(substr($product['descricao'], 0, $length)) .'...' : $product['descricao'];
     return $description;
 }
+
+/**
+ * make_path() Recebe um endereço de um diretório e cria caso não exista
+ * @param string $folder Caminho do diretório a ser criado
+ * @return string $folder Retorna o endereço do diretório criado ou false caso não consiga criar
+ * @author ldmotta
+ */
+function make_path($folder) {
+    $pasta='';
+    $f = explode('/', $folder);
+    foreach ($f as $p) {
+        $pasta .= $p . '/';
+        if (!is_dir($pasta)) {
+            try {
+                mkdir($pasta, 0777);
+            }catch (Exception $e) {return false;}
+        }
+    }
+    return $folder;
+}
+
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/
