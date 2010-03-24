@@ -26,13 +26,14 @@ CREATE TABLE `pedidos` (
   `id_pedido` int(11) NOT NULL AUTO_INCREMENT,
   `id_produto` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
-  `pedido_em` date NOT NULL,
-  `liberado_em` date NOT NULL,
-  `downloads` int(11) NOT NULL,
-  `usar_ate` date NOT NULL,
-  `limite` int(11) NOT NULL,
+  `pedido_em` datetime NOT NULL,
+  `liberado_em` datetime DEFAULT NULL,
+  `downloads` int(11) DEFAULT '0',
+  `usar_ate` datetime DEFAULT NULL,
+  `limite` int(11) NOT NULL DEFAULT '0',
+  `status` enum('Ativo','Bloqueado') NOT NULL DEFAULT 'Bloqueado',
   PRIMARY KEY (`id_pedido`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +42,7 @@ CREATE TABLE `pedidos` (
 
 LOCK TABLES `pedidos` WRITE;
 /*!40000 ALTER TABLE `pedidos` DISABLE KEYS */;
-INSERT INTO `pedidos` VALUES (1,1,1,'2010-03-23','2010-03-23',1,'2010-03-23',2),(2,2,1,'2010-03-19','2010-03-20',1,'2010-03-22',2);
+INSERT INTO `pedidos` VALUES (1,1,1,'2010-03-22 00:00:00','2010-03-24 18:00:46',2,'2010-03-25 00:00:00',2,'Ativo'),(2,2,1,'2010-03-22 00:00:00','2010-03-20 00:00:00',2,'2010-03-23 00:00:00',4,'Ativo'),(3,1,2,'2010-03-24 18:06:39','0000-00-00 00:00:00',0,'0000-00-00 00:00:00',0,'Bloqueado');
 /*!40000 ALTER TABLE `pedidos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,10 +59,10 @@ CREATE TABLE `produtos` (
   `arquivo` varchar(128) NOT NULL,
   `preco` float NOT NULL,
   `image` varchar(128) NOT NULL,
-  `data` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `atualizado` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` tinyint(1) NOT NULL DEFAULT '0',
   `descricao` text NOT NULL,
-  PRIMARY KEY (`id_produto`)
+  PRIMARY KEY (`id_produto`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -88,10 +89,12 @@ CREATE TABLE `usuarios` (
   `email` varchar(128) NOT NULL,
   `senha` varchar(128) NOT NULL,
   `telefone` varchar(128) NOT NULL,
+  `cadastrado_em` datetime NOT NULL,
   `group` int(11) NOT NULL DEFAULT '0',
   `controle` varchar(255) NOT NULL,
+  `status` enum('Ativo','Bloqueado') NOT NULL,
   PRIMARY KEY (`id_usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,7 +103,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Luciano D. Mota','ldmotta@gmail.com','e10adc3949ba59abbe56e057f20f883e','(11)5563-2037',0,''),(2,'Administrador','ldmotta@visie.com.br','e10adc3949ba59abbe56e057f20f883e','',1,'');
+INSERT INTO `usuarios` VALUES (1,'Luciano Dias Mota','ldmotta@gmail.com','e10adc3949ba59abbe56e057f20f883e','(11)5563-2037','0000-00-00 00:00:00',0,'','Ativo'),(2,'Luciano Dias Mota','ldmotta@visie.com.br','e10adc3949ba59abbe56e057f20f883e','(11)5563-2037','0000-00-00 00:00:00',1,'','Ativo');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -113,4 +116,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-03-23 18:22:41
+-- Dump completed on 2010-03-24 18:19:18
