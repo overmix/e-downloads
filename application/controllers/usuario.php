@@ -5,14 +5,14 @@
  */
 
 /**
- * Description of profile
+ * Description of usuario
  *
  * @author ldmotta
  */
 
-class Profile extends Controller {
+class Usuario extends Controller {
 
-    function Profile () {
+    function Usuario () {
         parent::Controller();
         $this->load->library('validation');
         $this->load->library('session');
@@ -22,9 +22,7 @@ class Profile extends Controller {
 
 		/*-------------validações------------*/
         $rules['nome']		= "trim|required|xss_clean";
-        if(!isAdmin()):
         $rules['telefone']	= "trim|required|xss_clean";
-        endif;
         $requerido          = $this->pass_check($this->input->post('senha2'));
         $rules['senha']		= "trim".$requerido."|callback_senha_check";
         $requerido          = $this->pass_check($this->input->post('senha'));
@@ -47,31 +45,26 @@ class Profile extends Controller {
         $this->validation->set_error_delimiters('<small class="error">', '</small>');
     }
 
-    function index() {
+    function index($id) {
         if (!$this->auth->logged()) redirect('inicio');
         $this->load->library('lightbox');
 
         $data = array(
             'logged'		=>$this->auth->logged(),
-            'page_title'	=>'Editar Cadastro',
-            'titulo'		=>'EDITAR INFORMAÇÕES DE CADASTRO',
+            'page_title'	=>'Editar usuário',
+            'titulo'		=>'INFORMAÇÕES DO USUÁRIO',
         );
 
-        $result = $this->user->getUserDataByEmail($this->session->userdata('email'));
+        $result = $this->user->getUserDataById($id);
+
+        $data['id'] = $result['id_usuario'];
 
         $this->validation->nome =$result['nome'];
         $this->validation->telefone =$result['telefone'];
 
-        $this->load->view('profile', $data);
+        $this->load->view('admin-usuario', $data);
     }
 
-    function email_check($str) {
-        if($this->session->userdata('email')!=$str) {
-            return !$this->user->checaUser(array('email'=>$str));
-            exit;
-        }
-        return true;
-    }
     function senha_check($str) {
         $where = array(
             'senha'=>md5($str),
@@ -100,10 +93,13 @@ class Profile extends Controller {
 
             if($this->input->post('senha2')) $dados += array('senha'=>md5($this->input->post('senha2')));
 
-            $this->user->updateUser($dados);
+            $id = $this->input->post('id_usuario');
+            
+            $where = array('id_usuario' => $id);
+            $this->user->updateUser($dados, $where);
             
             $this->messages->add('Usuário atualizado com sucesso!', 'success'); // ser user message
-            redirect('profile'); die();
+            redirect('usuario/index/'.$id); die();
         }
 
         if ($this->auth->logged()) {
@@ -112,7 +108,7 @@ class Profile extends Controller {
             $this->validation->telefone =$result['telefone'];
         }
 
-        $this->load->view('profile', $data);
+        $this->load->view('usuario', $data);
     }
 
     function deleteMedia($id)
@@ -134,7 +130,7 @@ class Profile extends Controller {
                 $this->messages->add('Esta imagem não pode ser excluída!<br />Ela já foi aprovada e está participando da votação.', 'warning'); // ser user message
             }
         }
-        redirect('profile'); die();
+        redirect('usuario'); die();
     }
 }
 ?>

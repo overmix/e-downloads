@@ -30,9 +30,9 @@ class Downloads extends Controller {
             header("Content-disposition: attachment; filename=\"".basename($file)."\"");
             readfile("$file");
             $this->product->updateQuantity($id);
-            redirect('downloads'); die();
         } else {
-            echo "No file selected";
+            $this->messages->add("Desculpe, o limite de download para este produto foi esgotado!");
+            redirect('downloads'); die();
         }
 
     }

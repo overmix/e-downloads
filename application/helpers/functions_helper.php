@@ -99,6 +99,33 @@ function make_path($folder) {
     return $folder;
 }
 
+/**
+ * isAdmin Verifica se o usuário logado é administrador
+ * @return boolean Retorna True caso o usuário logado seja administrador
+ */
+function isAdmin(){
+    $ci =& get_instance();
+    $query = $ci->db->get_where( 'usuarios', array('id_usuario'=>$ci->user->userID(), 'group'=>1));
+    return (bool)$query->num_rows();
+}
+
+function pedidoLiberado($userID, $pedidoID)
+{
+    $ci =& get_instance();
+    $where = array(
+        'id_usuario' =>  $userID,
+        'id_pedido' =>  $pedidoID,
+        'DATEDIFF(liberado_em, pedido_em) >= ' => 0,    // que tenha sido liberado
+    );
+    $ci->db->select('pedidos.liberado_em');
+    $return = $ci->db->getwhere('pedidos', $where)->row_array();
+    if (!count($return)) {
+        return array();
+    }
+    return $return;
+}
+
+
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/
@@ -260,16 +287,21 @@ function defineFunc($funcao) {
     }
 }
 */
+/*
+* Função que formata de acordo com o formato da data passada.
+*
+* @uses echo formataData('01/02/2010'); // output 2010-02-01
+* @uses echo formataData('2010-02-01'); // output 01/02/2010
+*
+* @param string $date
+* @return void
+* @author Igor Escobar
+*/
 
-/**
- * isAdmin Verifica se o usuário logado é administrador
- * @return boolean Retorna True caso o usuário logado seja administrador
- */
-function isAdmin(){
-    $ci =& get_instance();
-    $query = $ci->db->get_where( 'usuarios', array('id_usuario'=>$ci->user->userID(), 'group'=>1));
-    return (bool)$query->num_rows();
+function dateDb($date){
+    return (strstr($date, '-')) ? implode('/', array_reverse(explode('-',$date))) : implode('-', array_reverse(explode('/',$date)));
 }
+
 
 function formataData($formato, $datetime){
     $month = substr($datetime,5,2);
@@ -280,6 +312,8 @@ function formataData($formato, $datetime){
     $seconds = substr($datetime,17,4);
     return date($formato, mktime($hour,$minutes,$seconds,$month,$date,$year));
 }
+
+
 /**
  * geraNovaSenha()
  * @return string Retorna uma senha aleatória gerada a partir de um número randômico

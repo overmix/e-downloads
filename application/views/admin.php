@@ -4,11 +4,46 @@
 
 <div id="tabs">
     <ul>
-        <li><a href="#imagens-1"><span>Downloads</span></a></li>
+        <li><a href="#painel-1"><span>Pedidos</span></a></li>
+        <li><a href="#painel-2"><span>Produtos Ativos</span></a></li>
+        <li><a href="#painel-3"><span>Produtos Inativos</span></a></li>
+        <li><a href="#painel-4"><span>Usuários</span></a></li>
+        
     </ul>
-    <div id="imagens-1" class="gallery">
-        <?=form_open("admin/aprovar", array('id' => 'form_obj1'));?>
-        <input type="submit" id="aprovartodos" value="Aprovar todos os selecionados" />
+    <div id="painel-1" class="gallery">
+        <?=form_open("admin/liberar", array('id' => 'form_obj1'));?>
+        <input type="submit" id="aprovartodos" value="Liberar todos os selecionados" />
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="chkallrecents" id="chkallrecents" /></th>
+                    <th>N° Pedido</th><th>Usuário</th><th>Pedido em</th><th>Liberado em</th>
+                    <th>Usar até</th><th>Baixados</th><th>Limite</th><th colspan="2">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($pedidos as $pedido): ?>
+                <tr class="listimg1">
+                    <td><input type="checkbox" name="edit[]" class="imgitem" value="<?=$pedido['id_pedido'];?>" /></td>
+                    <td><a href="<?php echo base_url();?>pedido/index/<?php echo $pedido['id_pedido'];?>" title="Visualizar pedido"><?php echo $pedido['id_pedido'];?></a></td>
+                    <td><a href="<?php echo base_url();?>usuario/index/<?php echo $pedido['id_usuario'];?>" title="Email: <?php echo $pedido['email'];?> - Telefone: <?php echo $pedido['telefone'];?>"><?php echo $pedido['nome'];?></a></td>
+                    <td style='text-align: center'><?=formataData("d/m/Y H:i",$pedido['pedido_em']); ?></td>
+                    <td style='text-align: center'><?=formataData("d/m/Y H:i",$pedido['liberado_em']); ?></td>
+                    <td style='text-align: center'><?=formataData("d/m/Y H:i",$pedido['usar_ate']); ?></td>
+                    <td><?php echo $pedido['downloads'];?></td>
+                    <td><?php echo $pedido['limite'];?></td>
+                    <td><a href="<?php echo base_url();?>admin/liberarpedido/<?=$pedido['id_pedido'];?>" class="liberar">Liberar</a></td>
+                    <td><a href="<?php echo base_url();?>admin/remover/<?=$pedido['id_pedido'];?>" class="remover">Remover</a></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <input type="submit" value="Aprovar todos os selecionados" />
+        </form>
+    </div>
+    <div id="painel-2" class="gallery">
+        <?=form_open("admin/desativar", array('id' => 'form_obj1'));?>
+        <input type="submit" id="aprovartodos" value="Desativar todos os selecionados" />
         <table>
             <thead>
                 <tr>
@@ -17,20 +52,18 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($downloads as $item): ?>
+                <?php foreach($produtos_ativos as $product): ?>
                 <tr class="listimg1">
-                    <td><input type="checkbox" name="edit[]" class="imgitem" value="<?=$item['id_produto'];?>" /></td>
+                    <td><input type="checkbox" name="edit[]" class="imgitem" value="<?=$product['id_produto'];?>" /></td>
                     <td>
-                        <a href="<?=getMediaUrlById($item['id_produto']);?>" rel="prettyPhoto[downloads]">
-                            <img src="<?=getThumbUrlById($item['id_produto']);?>" alt="<?=$item['image'];?>" />
+                        <a href="<?=getThumbUrlById($product['id_produto']);?>">
+                            <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="<?=$product['image'];?>" />
                         </a>
                     </td>
-                    <td><?=$item['nome'] ?></td>
-                    <td><?=$item['image'] ?></td>
-                    <td style='text-align: center'><?=$item['media_category'] ?></td>
-                    <td style='text-align: center'><?=formataData("d/m/Y H:i",$item['atualizado']); ?></td>
-                    <td><a href="admin/aprovar/<?=$item['id_produto'];?>" class="aprovar">Aprovar</a></td>
-                    <td><a href="admin/remover/<?=$item['id_produto'];?>" class="remover">Remover</a></td>
+                    <td style='text-align: center'><?=formataData("d/m/Y H:i",$product['atualizado']); ?></td>
+                    <td><?=$product['descricao'] ?></td>
+                    <td><a href="admin/desativar/<?=$product['id_produto'];?>" class="desativar">Desativar</a></td>
+                    <td><a href="admin/remover/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -38,35 +71,61 @@
         <input type="submit" value="Aprovar todos os selecionados" />
         </form>
     </div>
-    <?php /*
-    <div id="lembrates-2" class="gallery">
-        <?=form_open("admin/make_xls", array('id' => 'form_obj2'));?>
-        <input type="submit" id="imprimirtodos" value="Gerar tabela com todos os selecionados" />
+    <div id="painel-3" class="gallery">
+        <?=form_open("admin/reativar", array('id' => 'form_obj1'));?>
+        <input type="submit" id="aprovartodos" value="Re-ativar todos os selecionados" />
         <table>
             <thead>
                 <tr>
-                    <th><input type="checkbox" name="chkallemails" id="chkallemails" /></th>
-                    <th>Lista de emails</th>
-                    <th>Status</th>
+                    <th><input type="checkbox" name="chkallrecents" id="chkallrecents" /></th><th>Imagem</th><th>Título</th>
+                    <th>Atualizado em</th><th>Descrição</th><th colspan="2">Ações</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($emails_naoenviados as $item):
-                $status = $item['status']==0?'Não enviado':'Enviado';
-                ?>
-                <tr class="listemail">
-                    <td><input type="checkbox" name="edit[]" class="emailitem" value="<?=$item['lembrete_id'];?>" /></td>
-                    <td><?=$item['email'];?></td>
-                    <td><?=$status;?></td>
+                <?php foreach($produtos_inativos as $product): ?>
+                <tr class="listimg1">
+                    <td><input type="checkbox" name="edit[]" class="imgitem" value="<?=$product['id_produto'];?>" /></td>
+                    <td>
+                        <a href="<?=getThumbUrlById($product['id_produto']);?>">
+                            <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="<?=$product['image'];?>" />
+                        </a>
+                    </td>
+                    <td style='text-align: center'><?=formataData("d/m/Y H:i",$product['atualizado']); ?></td>
+                    <td><?=$product['descricao'] ?></td>
+                    <td><a href="admin/reativar/<?=$product['id_produto'];?>" class="reativar">Re-ativar</a></td>
+                    <td><a href="admin/remover/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <input type="submit" id="imprimirtodos" value="Gerar tabela com todos os selecionados" />
+        <input type="submit" value="Aprovar todos os selecionados" />
+        </form>
     </div>
-    */ ?>
+    <div id="painel-4" class="gallery">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th><th>Email</th><th>Telefone</th><th>Cadastrado em</th><th>Status</th><th colspan="2">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($usuarios as $usuario): ?>
+                <tr class="listimg1">
+                    <td><a href="<?php echo base_url();?>usuario/index/<?php echo $usuario['id_usuario'];?>" title="Email: <?php echo $usuario['email'];?> - Telefone: <?php echo $usuario['telefone'];?>"><?php echo $usuario['nome'];?></a></td>
+                    <td><?=$usuario['email'] ?></td>
+                    <td><?=$usuario['telefone'] ?></td>
+                    <td style='text-align: center'><?=formataData("d/m/Y H:i",$usuario['cadastrado_em']); ?></td>
+                    <td><?=$usuario['status'] ?></td>
+                    <?php if($usuario['status']=='Ativo'):?>
+                    <td><a href="admin/bloquearuser/<?=$usuario['id_usuario'];?>" class="bloquear">Bloquear</a></td>
+                    <?php else:?>
+                    <td><a href="admin/ativaruser/<?=$usuario['id_usuario'];?>" class="ativar">Ativar</a></td>
+                    <?php endif;?>
+                    <td><a href="admin/removeruser/<?=$usuario['id_usuario'];?>" class="remover">Remover</a></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
-<script type="text/javascript" language="javascript" charset="utf-8">
-<?=$this->lightbox->start('gallery');?>
-</script>
 <?php include ("admin-footer.php");?>

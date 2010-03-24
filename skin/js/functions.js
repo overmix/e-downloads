@@ -12,7 +12,6 @@ $(function(){
             $(this).attr('checked', $('#chkallrecents').is(':checked'));
         })
     })
-
     $('.imgitem').change(function() {
         var todosMarcados = true;
         $('#imagens-1').find('input[class=imgitem]').each(function(e){
@@ -56,7 +55,7 @@ $(function(){
     })
 
 	$('.remover').click(function(){
-		if(!confirm("Comfirma a exclusão deste item?")) {
+		if(!confirm("Comfirma a exclusão?")) {
             return false;
         }
 	});
@@ -80,11 +79,13 @@ $(function(){
             $(this).parent().find('.txt').hide();
             $(this).parent().find('.obj').show();
             $(this).attr('class', 'canceledit');
+            $(this).html('cancelar');
         }else{
             $(this).parent().find('.obj').hide();
             $(this).parent().find('.txt').show();
             $(this).parent().find('input').val($(this).parent().find('.txt').html())
             $(this).attr('class', 'edit')
+            $(this).html('editar');
         }
         return false;
     });

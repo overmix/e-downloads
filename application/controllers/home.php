@@ -17,7 +17,7 @@ class Home extends Controller {
                 'page_title'=>'e-Downloads',
                 'titulo'=>'Home',
         );
-        $data['products'] = $this->product->getAllProducts();
+        $data['products'] = $this->product->getAllProductsByStatus(1);
         return $data;
     }
 

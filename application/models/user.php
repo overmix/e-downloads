@@ -30,9 +30,9 @@ class User extends Model {
         return $this->db->insert_id();
     }
 
-    function updateUser() {
-        $this->dadosUser = is_array(func_get_arg(0))?func_get_arg(0):func_get_args();
-        $this->db->update('usuarios', $this->dadosUser, "email = '".$this->auth->userMail()."'" );
+    function updateUser($dados, $where=array()) {
+        $where = count($where) ? $where : array("email" => (string)$this->auth->userMail());
+        $this->db->update('usuarios', $dados, $where);
         //$this->session->set_userdata('email', $this->dadosUser['email']);
         return $this->db->affected_rows();
     }
@@ -49,7 +49,7 @@ class User extends Model {
     }
     
     /**
-     * Carrega as imagens ou vídeo do usuário
+     * Retorna todos os downloads liberados do usuário
      * @return Array();
      */
     function getUserDownloads() {
@@ -57,7 +57,7 @@ class User extends Model {
             'id_usuario' =>  $this->getUserIdByEmail($this->auth->userMail()),
             'DATEDIFF(liberado_em, pedido_em) >= ' => 0,    // que tenha sido liberado
             'DATEDIFF(usar_ate, liberado_em) >= ' => 0,
-            'limite - downloads >=' => 0,
+            'limite - downloads >' => 0,
         );
         $this->db->select('pedidos.*, produtos.*')
             ->join('produtos', 'produtos.id_produto = pedidos.id_produto');
@@ -65,6 +65,103 @@ class User extends Model {
         return $this->db->getwhere('pedidos', $where)->result_array();
     }
 
+    /**
+     * getAllPedidos Retorna todos os pedidos do usuário
+     * @return Array();
+     */
+    function getPedidosById($id) {
+        $where = array(
+            'id_pedido' =>  $id,
+        );
+        
+        $this->db->select('pedidos.*, usuarios.*, produtos.*')
+            ->join('usuarios', 'usuarios.id_usuario = pedidos.id_usuario')
+            ->join('produtos', 'produtos.id_produto = pedidos.id_produto');
+            
+        $return = $this->db->getwhere('pedidos', $where)->row_array();
+        if (!count($return)) {
+            return array();
+        }
+        return $return;
+    }
+
+    /**
+     * getAllUsers Retorna todos usuários de um grupo específico, passado como parâmetro
+     * @param array $where Array associativo contendo 'campo' => 'valor' que será o critério da pesquisa
+     * @param int $limit Número que determina a quantidade de registros retornados
+     * @return array Retorna todos os campos da tabela usuários
+     */
+    function getAllUsers($where, $limit=null) {
+        $this->db->orderby("nome", "asc");
+        $return = $this->db->getwhere('usuarios', $where, $limit)->result_array();
+        if (!count($return)) {
+            return array();
+        }
+        return $return;
+    }
+    
+    /**
+     * Bloqueia o usuário com id passado em $id
+     * @param int $id Id do usuário
+     * @return True caso tenha sido bloqueado com sucesso
+     */
+    function bloqueiaUser($id) {
+        $data = array('status'=>'Bloqueado');
+        $this->db->where('id_usuario', $id);
+        return $this->db->update('usuarios', $data);
+    }
+
+    /**
+     * Ativa o usuário com id passado em $id
+     * @param int $id Id do usuário
+     * @return True caso tenha sido ativado com sucesso
+     */
+    function ativaUser($id) {
+        $data = array('status'=>'Ativo');
+        $this->db->where('id_usuario', $id);
+        return $this->db->update('usuarios', $data);
+    }
+
+    /**
+     * removeUser Remove o usuário com id passado em $id
+     * @param int $id Id do usuário
+     * @return True caso tenha sido removido com sucesso
+     */
+    function removeUser($id) {
+        return $this->db->delete('usuarios', array('id_usuario' => $id));
+    }
+
+    /**
+     * Pega todos os dados do usuário filtrando pelo $id
+     * @param int $id Id do usuário
+     * @return array Resultado da busa com todos os dados do usuário
+     */
+    function getUserDataById($id) {
+        $return = $this->db->getwhere('usuarios', array('id_usuario'=>$id))->row_array();
+        if (!count($return)) {
+            return array();
+        }
+        return $return;
+    }
+
+    /**
+     * Pega todos os dados do usuário filtrando pelo $email
+     * @param int $email Email do usuário
+     * @return array Resultado da busa com todos os dados do usuário
+     */
+    function getUserDataByEmail($email) {
+        $return = $this->db->getwhere('usuarios', array('email'=>$email))->row_array();
+        if (!count($return)) {
+            return array();
+        }
+        return $return;
+    }
+
+    function liberarPedido($id) {
+        $data = array('liberado_em' => date('Y-m-d H:i:s'), 'status'=>'Ativo');
+        $this->db->where('id_pedido', $id);
+        return $this->db->update('pedidos', $data);
+    }
 
 
 /* ------------------------------------------------------------------------------------------------------------------------ */
@@ -76,33 +173,6 @@ class User extends Model {
         $this->dadosUser = is_array(func_get_arg(0))?func_get_arg(0):func_get_args();
         $this->db->insert('lembrete', $this->dadosUser);
         return $this->db->insert_id();
-    }
-
-    function getUserDataByEmail($email) {
-        //$this->db->join('imagens', 'imagens.id_usuario = usuarios.id');
-        return $this->db->getwhere('usuarios', array('email'=>$email))->row_array('id_usuario');
-        //echo "<pre>"; print_r($return); echo "</pre>"; die("fim");
-    }
-
-    function getUserDataById($id) {
-        //$this->db->join('imagens', 'imagens.id_usuario = usuarios.id');
-        return $this->db->getwhere('usuarios', array('id_usuarios'=>$id))->row_array('id');
-        //echo "<pre>"; print_r($return); echo "</pre>"; die("fim");
-    }
-
-    /**
-     * getAllUserByGroup Retorna todos usuários de um grupo específico, passado como parâmetro
-     * @param array $where Array associativo contendo 'campo' => 'valor' que será o critério da pesquisa
-     * @param int $limit Número que determina a quantidade de registros retornados
-     * @return array Retorna todos os campos da tabela usuários
-     */
-    function getAllUserByGroup($where=null, $limit=null) {
-        $this->db->orderby("nome", "asc");
-        $return = $this->db->getwhere('usuarios', $where, $limit)->result_array();
-        if (!$return) {
-            return array();
-        }
-        return $return;
     }
 
     function getPagedList($type, $limit = 10, $offset = 0, $order_by = 'id') {
@@ -189,17 +259,6 @@ class User extends Model {
         }
 
         return $this->db->delete('imagens', $where);
-    }
-
-    /**
-     * aprovaImg Atualiza o status da imagem como 1
-     * @param int $id_media Id da imagem na tabela imagens
-     * @return boolean Retorna true caso a imagem tenha sido aprovada com sucesso
-     */
-    function aprovaImg($id_media) {
-        $data = array('status'=>1);
-        $this->db->where('id', $id_media);
-        return $this->db->update('imagens', $data);
     }
 
     /**

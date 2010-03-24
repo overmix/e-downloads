@@ -38,14 +38,10 @@
             <ul class="center">
                 <li><?php echo anchor('home', 'Ir para o site', array('title'=>'1º Concurso de foto e vídeo - Olhares sobre a água e o clima'));?></li>
                 <li><?php echo anchor('admin', 'Administração');?></li>
-                <li><?php echo anchor('profile', 'Dados do Administrador', array('title'=>'Acesse seu perfil')); ?></li>
+                <li><?php echo anchor('profile', 'Meu perfil', array('title'=>'Acesse seu perfil')); ?></li>
                 <li><?php echo anchor('inicio/sair', 'Sair');?></li>
              </ul>
          </div>
-
-        <div id="header" class="center">
-            <h1><?php echo anchor('home', 'e-Downloads', array('title'=>'e-Downloads'));?></h1>
-        </div>
 
         <?=output_msg($type = null);?>
 

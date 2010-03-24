@@ -1,10 +1,4 @@
-<?php if(isAdmin()):
-    include ("admin-header.php");
-else:
-    include ("header.php");?>
-    <link rel="stylesheet" type="text/css" media="screen" charset="utf-8" href="<?=base_url();?>skin/css/prettyPhoto.css" />
-    <script type="text/javascript" charset="utf-8" src="<?=base_url();?>skin/js/jquery.prettyPhoto.js"></script>
-<?php endif;?>
+<?php include ("admin-header.php"); ?>
 
 <h1><?=$titulo;?></h1>
 
@@ -12,7 +6,8 @@ else:
 
 <div id="profile" class="bg">
     <div class="dadossobre">
-        <?=form_open("profile/salvar");?>
+        <?=form_open("usuario/salvar");?>
+        <input type="hidden" value="<?php echo $id;?>" name="id_usuario" />
             <ul>
                 <li>
                     <span>Nome:</span>
@@ -20,13 +15,11 @@ else:
                     <strong class="txt"><?=$this->validation->nome;?></strong>
                     <a href="#" title=" " class="edit">editar</a><?=$this->validation->nome_error; ?>
                 </li>
-                <?php if(!isAdmin()):?>
                 <li>
                     <span>Telefone:</span>
                     <strong class="obj" style="display:none"><input type="text" name="telefone" value="<?=$this->validation->telefone;?>" /></strong>
                     <strong class="txt"><?=$this->validation->telefone;?></strong>
                     <a href="#" title=" " class="edit">editar</a><?=$this->validation->telefone_error; ?></li>
-                <?php endif;?>
             </ul>
 
             <h1>Caso queira alterar a senha:</h1>
@@ -57,8 +50,4 @@ else:
 
 </div>
 
-<?php if(isAdmin()):
-    include ("admin-footer.php");
-else:
-    include ("footer.php");
-endif;?>
+<?php include ("admin-footer.php"); ?>

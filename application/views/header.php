@@ -24,6 +24,7 @@
             <li><?php echo anchor('home', 'Home', array('title'=>'Home'));?></li>
             <?php if(logged()):?>
             <li><?php echo anchor('downloads', 'Meus downloads', array('title'=>'Meus downloads'));?></li>
+            <li><?php echo anchor('profile', 'Perfil', array('title'=>'Visualizar meu perfil'));?></li>
             <?php endif;?>
             <li><?php echo anchor('cadastro', 'Cadastre-se', array('title'=>'Cadastre-se'));?></li>
             <li><?php echo anchor('inicio', 'Login', array('title'=>'Login')); ?></li>

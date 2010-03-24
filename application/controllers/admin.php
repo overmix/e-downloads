@@ -5,6 +5,7 @@ class Admin extends Controller {
         parent::Controller();
         $this->load->library('validation');
         $this->load->library('lightbox');
+        $this->load->model('product');
         $this->load->model('user');
 
 		/*-------------validações------------*/
@@ -31,7 +32,13 @@ class Admin extends Controller {
     function index ($msg='') {
         if (!$this->auth->logged() OR !isAdmin()) {redirect('home'); die();}
         $data = array('logged'=>$this->auth->logged(),'page_title'=>'Administração', 'titulo'=>'Administração e-Downloads', 'description'=>'Administração geral');
-        $data['downloads'] = $this->user->getAllMedia(array('status'=>1));
+        $data['pedidos'] = $this->product->getAllPedidos();
+        //echo "<pre>"; print_r($data); echo "</pre>"; die('fim');
+        $data['produtos_ativos'] = $this->product->getAllProductsByStatus(1);
+        $data['produtos_inativos'] = $this->product->getAllProductsByStatus(0);
+        $data['usuarios'] = $this->user->getAllUsers(array('group'=>0));
+        //$data['usuarios_inativos'] = $this->product->getAllProductsByStatus(0);
+
         $this->load->view('admin', $data);
     }
 
@@ -43,16 +50,15 @@ class Admin extends Controller {
         $this->load->view('admin-users', $data);
     }
 
-    function aprovar($id=0) {
+    function desativar($id=0) {
         $ids = $id?array($id):$this->input->post('edit');
         foreach($ids as $id)
         {
             if (!$this->auth->logged() OR !isAdmin()) {redirect('home'); die();}
-            $media = getMediaById($id);
-            if($media['id']) {
-                $tipo = $media['media_type']==1?"Imagem":"Vídeo";
-                if($this->user->aprovaImg($id)){
-                    $texto = sprintf(" - %s <strong>%s</strong> de <strong>%s</strong> foi aprovado(a) com sucesso!<br />", $tipo, $media['nome_img'], $media['nome_autor']);
+            $product = getProductById($id);
+            if($product['id_produto']) {
+                if($this->product->desativarProduto($id)){
+                    $texto = sprintf("O produto <strong>%s</strong> foi desativado com sucesso!<br />", $product['nome']);
                     $this->messages->add($texto, 'success'); // ser user message
                 }
             }
@@ -60,6 +66,22 @@ class Admin extends Controller {
         redirect('admin'); die();
     }
     
+    function reativar($id=0) {
+        $ids = $id?array($id):$this->input->post('edit');
+        foreach($ids as $id)
+        {
+            if (!$this->auth->logged() OR !isAdmin()) {redirect('home'); die();}
+            $product = getProductById($id);
+            if($product['id_produto']) {
+                if($this->product->reativarProduto($id)){
+                    $texto = sprintf("O produto <strong>%s</strong> foi re-ativado com sucesso!<br />", $product['nome']);
+                    $this->messages->add($texto, 'success'); // ser user message
+                }
+            }
+        }
+        redirect('admin'); die();
+    }
+
     function reprovar($id) {
         if (!$this->auth->logged() OR !isAdmin()) {redirect('home'); die();}
         $media = getMediaById($id);
@@ -68,6 +90,66 @@ class Admin extends Controller {
             if($this->user->reprovaImg($id)){
                 $texto = sprintf("%s <strong>%s</strong> de <strong>%s</strong> foi reprovado(a).", $tipo, $media['nome_img'], $media['nome_autor']);
                 $this->messages->add($texto, 'success'); // ser user message
+            }
+        }
+        redirect('admin'); die();
+    }
+
+    /**
+     * Bloqueia o usuario com id passado em $id
+     * @param int $id Id do usuario
+     */
+    function bloquearuser($id=0) {
+        if (!$this->auth->logged() OR !isAdmin()) {redirect('home'); die();}
+        $ids = $id?array($id):$this->input->post('edit');
+        foreach($ids as $id)
+        {
+            $user = $this->user->getUserDataById($id);
+            if(count($user)) {
+                if($this->user->bloqueiaUser($id)){
+                    $texto = sprintf("O usuário <strong>%s</strong> foi bloqueado com sucesso.", $user['nome']);
+                    $this->messages->add($texto, 'success'); // ser user message
+                }
+            }
+        }
+        redirect('admin'); die();
+    }
+
+    /**
+     * Ativa o usuario com id passado em $id
+     * @param int $id Id do usuario
+     */
+    function ativaruser($id=0) {
+        if (!$this->auth->logged() OR !isAdmin() OR !$id) {redirect('home'); die();}
+        $ids = $id?array($id):$this->input->post('edit');
+        foreach($ids as $id)
+        {
+            $user = $this->user->getUserDataById($id);
+            if(count($user)) {
+                if($this->user->ativaUser($id)){
+                    $texto = sprintf("O usuário <strong>%s</strong> foi ativado com sucesso.", $user['nome']);
+                    $this->messages->add($texto, 'success'); // ser user message
+                }
+            }
+        }
+        redirect('admin'); die();
+    }
+
+    /**
+     * Remove o usuario com id passado em $id
+     * @param int $id Id do usuario
+     */
+    function removeruser($id=0) {
+        if (!$this->auth->logged() OR !isAdmin() OR !$id) {redirect('home'); die();}
+        $ids = $id?array($id):$this->input->post('edit');
+        foreach($ids as $id)
+        {
+            $user = $this->user->getUserDataById($id);
+            if(count($user)) {
+                if($this->user->removeUser($id)){
+                    $texto = sprintf("O usuário <strong>%s</strong> foi removido com sucesso.", $user['nome']);
+                    $this->messages->add($texto, 'success'); // ser user message
+                }
             }
         }
         redirect('admin'); die();
@@ -99,7 +181,7 @@ class Admin extends Controller {
         $xlsUrl .= 'lista_de_emails.xls';      //date("d-m-Y", time()).".xls";
         file_put_contents($xlsUrl, utf8_decode($remindersHtml));
 
-        redirect('admin');
+        redirect('admin'); die();
     }
 
     function addadmin($id) {
@@ -155,6 +237,24 @@ class Admin extends Controller {
         }
         redirect('admin'); die();
     }
-    
+
+    /**
+     * Libera o pedido para o usuario com id passado em $id
+     * @param int $id Id do usuario
+     */
+    function liberarpedido($id=0) {
+        if (!$this->auth->logged() OR !isAdmin() OR !$id) {redirect('home'); die();}
+        $ids = $id?array($id):$this->input->post('edit');
+        foreach($ids as $id)
+        {
+            if($this->user->liberarPedido($id)){
+                $texto = sprintf("O pedido N°<strong>%s</strong> foi liberado com sucesso.", $id);
+                $this->messages->add($texto, 'success'); // ser user message
+            }
+        }
+        redirect('admin'); die();
+    }
+
+
 }
 ?>
