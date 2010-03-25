@@ -178,6 +178,51 @@ function formataData($formato, $datetime){
     return date($formato, mktime($hour,$minutes,$seconds,$month,$date,$year));
 }
 
+function mandaEmail($de, $para, $assunto, $mensagem, $nome='')
+{
+    $ci =& get_instance();
+    $config['charset']      = 'iso-8859-1';
+    $config['protocol']     = 'smtp';
+    $config['smtp_port']    = '25';
+    $config['smtp_host']    = 'localhost';
+    $config['mailtype']     = 'html';
+    
+    $ci->email->initialize($config);
+    $ci->email->from($de, $nome);
+    $ci->email->to($para);
+    $ci->email->subject(utf8_decode($assunto));
+
+    $msg = utf8_decode($mensagem);
+
+    $ci->email->message($msg);
+    try {
+        $ci->email->send();
+        return true;
+    } catch (Exception $e) {}
+}
+
+/**
+ * Varre um arquivo, procurando qualquer coincidência do texto passado
+ * como chave de uma array associativo, e substitue estas
+ * ocorrencias pelos valores deste mesmo array.
+ * @param string $file caminho do arquivo de template para o email
+ * @param array $dados Array  associativo contendo chave e valor, onde a chave
+ * corresponde ao item entre chaves("{}") no template
+ * @example loadTemplate('template_mail.txt', Array('nome' => 'Luciano')).
+ * Imprime o texto 'Luciano' na posição {nome} do template de email
+ * @return string Retorna um template com as devidas substituições.
+ */
+function loadTemplate ($file, $dados)
+{
+    if (!file_exists($file)) return false;
+
+    $template = file_get_contents($file, 'r');
+    foreach ($dados as $key => $value){
+      $template = str_replace('{'.$key.'}', str_replace("'","",$value), $template);
+    }
+    return $template;
+}
+
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/

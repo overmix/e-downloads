@@ -59,7 +59,7 @@ class Esqueci extends Controller {
 
             $this->email->initialize($config);
 
-            $this->email->from($this->config->item('admin_email'), 'e-downloads');
+            $this->email->from($this->config->item('admin_email'), $this->config->item('admin_name'));
             $this->email->to($myEmail);
 
             $this->email->subject(utf8_decode('Troca de senha'));

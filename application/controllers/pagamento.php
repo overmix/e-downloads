@@ -13,14 +13,17 @@ class Pagamento extends Controller {
             redirect('inicio');
         }
 
-        $data = array(
+        $dados = array(
             'id_produto'    => $produto,
             'id_usuario'    => $this->user->getUserIdByEmail($this->auth->userMail()),
             'pedido_em'     => date('Y-m-d H:i:s'),
             'status'        => 'Bloqueado',
         );
-        $this->product->geraPedido($data);
-
+        $pedido = $this->product->geraPedido($dados);
+        if ($pedido) {
+            $mensagem = "oi";
+            //mandaEmail($this->config->item('admin_email'), $this->auth->userMail(), 'Pedido de download', $mensagem, $this->config->item('admin_nome'));
+        }
         $data = array(
             'logged'        =>$this->auth->logged(),
             'page_title'    =>'Pagamento',
