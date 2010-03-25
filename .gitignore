@@ -5,3 +5,6 @@
 config.php
 code/.htaccess
 nbproject/*
+.settings/*
+.buildpath
+.project
