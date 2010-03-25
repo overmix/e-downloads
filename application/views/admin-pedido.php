@@ -19,7 +19,11 @@
                 <li><span>Pedido em:</span>
                     <strong class="txt"><?=$this->validation->pedido_em;?></strong></li>
                 <li><span>Liberado em:</span>
-                    <strong class="txt"><?=$this->validation->liberado_em;?></strong></li>
+                    <strong class="txt"><?=$this->validation->liberado_em;?></strong>
+					<?php if(!is_date($this->validation->liberado_em)): ?>
+					<a href="<?php echo base_url();?>admin/liberarpedido/<?php echo $pedido['id_pedido'];?>" title=" ">Liberar agora</a>
+					<?php endif ;?>
+					</li>
                 <li><span>Downloads efetuados:</span>
                     <strong class="txt"><?=$this->validation->downloads;?></strong></li>
                 <li>

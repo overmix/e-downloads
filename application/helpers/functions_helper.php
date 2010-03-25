@@ -125,6 +125,41 @@ function pedidoLiberado($userID, $pedidoID)
     return $return;
 }
 
+function is_date($date)
+{
+	if (!$date) return FALSE;
+	$Stamp = strtotime( $date );
+	if(!$Stamp) return FALSE;
+	$Month = date( 'm', $Stamp );
+	$Day   = date( 'd', $Stamp );
+	$Year  = date( 'Y', $Stamp );
+	return checkdate($Month,$Day,$Year);
+}
+
+/*
+* Função que formata de acordo com o formato da data passada.
+*
+* @uses echo formataData('01/02/2010'); // output 2010-02-01
+* @uses echo formataData('2010-02-01'); // output 01/02/2010
+*
+* @param string $date
+* @return void
+* @author Igor Escobar
+*/
+
+function dateDb($date){
+    return (strstr($date, '-')) ? implode('/', array_reverse(explode('-',$date))) : implode('-', array_reverse(explode('/',$date)));
+}
+
+function formataData($formato, $datetime){
+    $month = substr($datetime,5,2);
+    $date = substr($datetime,8,2);
+    $year = substr($datetime,0,4);
+    $hour = substr($datetime,11,2);
+    $minutes = substr($datetime,14,2);
+    $seconds = substr($datetime,17,4);
+    return date($formato, mktime($hour,$minutes,$seconds,$month,$date,$year));
+}
 
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/
@@ -287,31 +322,6 @@ function defineFunc($funcao) {
     }
 }
 */
-/*
-* Função que formata de acordo com o formato da data passada.
-*
-* @uses echo formataData('01/02/2010'); // output 2010-02-01
-* @uses echo formataData('2010-02-01'); // output 01/02/2010
-*
-* @param string $date
-* @return void
-* @author Igor Escobar
-*/
-
-function dateDb($date){
-    return (strstr($date, '-')) ? implode('/', array_reverse(explode('-',$date))) : implode('-', array_reverse(explode('/',$date)));
-}
-
-
-function formataData($formato, $datetime){
-    $month = substr($datetime,5,2);
-    $date = substr($datetime,8,2);
-    $year = substr($datetime,0,4);
-    $hour = substr($datetime,11,2);
-    $minutes = substr($datetime,14,2);
-    $seconds = substr($datetime,17,4);
-    return date($formato, mktime($hour,$minutes,$seconds,$month,$date,$year));
-}
 
 
 /**

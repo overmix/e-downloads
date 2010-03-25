@@ -29,13 +29,23 @@ class Pedido extends Controller {
     }
     
     function index ($id) {
+		
         if (!$this->auth->logged() OR !isAdmin() OR !$id) {redirect('home'); die();}
         $data = array('logged'=>$this->auth->logged(),'page_title'=>'Administração', 'titulo'=>'Pedido N° ' . $id, 'description'=>'Detalhes do pedido');
         $data['pedido'] = $this->user->getPedidosById($id);
-        $this->validation->pedido_em = formataData('d/m/Y',$data['pedido']['pedido_em']);
-        $this->validation->liberado_em = formataData('d/m/Y',$data['pedido']['liberado_em']);
+		if (!count($data['pedido']))
+		{
+            $this->messages->add('Número de pedido inexistente!', 'warning'); // ser user message
+            redirect('admin'); die();
+		}
+        $this->validation->pedido_em = formataData('d/m/Y H:i',$data['pedido']['pedido_em']);
+        $this->validation->liberado_em = is_date($data['pedido']['liberado_em']) ?
+										formataData('d/m/Y H:i', $data['pedido']['liberado_em']) :
+										'0000-00-00 00:00';
         $this->validation->downloads = $data['pedido']['downloads'];
-        $this->validation->usar_ate = formataData('d/m/Y',$data['pedido']['usar_ate']);
+        $this->validation->usar_ate = is_date($data['pedido']['usar_ate']) ? 
+										formataData('d/m/Y', $data['pedido']['usar_ate']) :
+										'0000-00-00';
         $this->validation->limite = $data['pedido']['limite'];
         //echo "<pre>"; print_r($data); echo "</pre>"; die('fim');
         $this->load->view('admin-pedido', $data);

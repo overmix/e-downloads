@@ -22,11 +22,11 @@
             <?=$this->validation->senha2_error; ?></label>
 
             <div class="botoes">
-                <button type="submit">Cadastrar</button>
- 				<a href="home" style="display:block; float:left; padding:10px;">Cancelar e voltar para Home</a>
-                <?//=anchor("/", "Limpar", array('class'=>'btn', 'id'=>'resetar'));?>
+                <?=anchor(base_url() . "home", "Voltar para a home", array('class'=>'btn'));?>
+				<button type="submit">Cadastrar</button>
+                <?=anchor("/", "Limpar", array('class'=>'btn', 'id'=>'resetar'));?>
             </div>
-            
+
         </fieldset>
     </form>
  </div>

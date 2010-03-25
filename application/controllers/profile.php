@@ -88,7 +88,7 @@ class Profile extends Controller {
         $data = array(
             'logged'        =>$this->auth->logged(),
             'page_title'    =>'Informações de Cadastro',
-            'titulo'        =>'INFORMAÇÕES DE CADASTRO',
+            'titulo'        =>'EDITAR INFORMAÇÕES DE CADASTRO',
         );
 
         //caso a validação esteja ok
