@@ -142,5 +142,9 @@ class Product extends Model {
         return $this->db->affected_rows();
     }
 
+    function geraPedido($dados)
+    {
+        return $this->db->insert('pedidos', $dados);
+    }
 
 }

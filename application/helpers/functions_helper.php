@@ -25,7 +25,8 @@ function getProductUrlById($id) {
  */
 function setLastUri($uri='')
 {
-    $this->session->set_userdata(array('last_uri'=>$uri));
+    $ci =& get_instance();
+    $ci->session->set_userdata(array('last_uri'=>$uri));
 }
 
 function getLastUri($default='home')
