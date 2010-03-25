@@ -98,6 +98,10 @@ class Product extends Model {
         return $return ? $return->id_pedido : FALSE;
     }
 
+    /**
+     * getAllPedidos Pega todos os pedidos ativos ou nao, de todos os usuários
+     * @return array Array contendo os dados do pedido
+     */
     function getAllPedidos()
     {
         $this->db->select('pedidos.*, usuarios.*')
@@ -142,6 +146,11 @@ class Product extends Model {
         return $this->db->affected_rows();
     }
 
+    /**
+     * geraPedido Cria um pedido pendente
+     * @param array $dados Array assossiativo contendo o campo e valor a ser inserido
+     * @return bool True em caso de sucesso, ou FALSE
+     */
     function geraPedido($dados)
     {
         return $this->db->insert('pedidos', $dados);
