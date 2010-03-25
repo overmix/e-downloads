@@ -49,9 +49,8 @@ class Inicio extends Controller {
                 if(isAdmin()){
                     redirect('admin'); die();
                 }else{
-                    redirect('profile');die();
+                    redirect(getLastUri()); die();
                 }
-
             }
             $this->messages->add("Usuário ou senha inválida!");
 		}

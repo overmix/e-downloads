@@ -19,7 +19,23 @@ function getProductUrlById($id) {
     $product = getProductById($id);
     return base_url().$ci->config->item('upload_path') . 'image/' . $product['image'];
 }
+/**
+ * Seta a sessão last_uri com o valor passado em $uri
+ * @param string $uri Uri de redirecionamento
+ */
+function setLastUri($uri='')
+{
+    $this->session->set_userdata(array('last_uri'=>$uri));
+}
 
+function getLastUri($default='home')
+{
+    $ci =& get_instance();
+    $last_uri = $ci->session->userdata('last_uri');
+    $segment = $last_uri ? $last_uri : $default;
+    $ci->session->unset_userdata('last_uri');
+    echo $segment;
+}
 /**
  * retorna a url absoluta da miniatura de uma imagem ou vídeo gravado pelo usuário
  * @param int $id

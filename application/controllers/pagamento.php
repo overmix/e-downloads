@@ -7,8 +7,11 @@ class Pagamento extends Controller {
     }
 
     function index ($pedido=0) {
-        if (!$this->auth->logged()) redirect('inicio');
-
+    	if (!$this->auth->logged())
+        {
+            setLastUri($this->uri->segment(1));
+            redirect('inicio');
+        }
         $pagamento = $this->product->getPedidoById(array('id_pedido'=>$pedido));
         
         if (!$pagamento) {

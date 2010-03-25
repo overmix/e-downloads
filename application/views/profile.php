@@ -29,11 +29,10 @@ else:
                 <?php endif;?>
             </ul>
 
-            <h1>Caso queira alterar a senha:</h1>
             <?=$this->output->get_output();?>
 
             <fieldset class="dadossegurança">
-                <legend></legend>
+                <legend>Alterar de senha</legend>
                 <label for="senha">
                     <span>Senha antiga:</span>
                     <input type="password" value="" name="senha" id="senha" />
