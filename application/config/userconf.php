@@ -8,4 +8,4 @@ $config['max_video']    = '1';
 $config['upload_path']  = 'uploads/';
 $config['xls_path']     = 'uploads/xlsfiles/';
 $config['admin_email']  = 'ldmotta@visie.com.br';
-$config['admin_name']  = 'e-Downloads';
+$config['admin_name']   = 'e-Downloads';

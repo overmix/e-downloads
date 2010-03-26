@@ -101,8 +101,9 @@ else
 		$application_folder = 'application';
 	}
 
-	define('APPPATH', BASEPATH.$application_folder.'/');
+	define('APPPATH', BASEPATH . $application_folder.'/');
 }
+define('TEMPLATEPATH', dirname(__FILE__).'/'.$application_folder.'/');
 
 /*
 |---------------------------------------------------------------

@@ -40,12 +40,13 @@ class Inicio extends Controller {
             $dados = $this->input->xss_clean($dados);
 
             if ($this->user->loginUser($dados)){
+
+                //$this->session->sess_destroy();
                 $session_data = array(
                     'email' => $dados['email'],
                     'logado' => true
                 );
                 $this->session->set_userdata($session_data);
-
                 if(isAdmin()){
                     redirect('admin'); die();
                 }else{

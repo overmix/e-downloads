@@ -34,8 +34,8 @@ function getLastUri($default='home')
     $ci =& get_instance();
     $last_uri = $ci->session->userdata('last_uri');
     $segment = $last_uri ? $last_uri : $default;
-    $ci->session->unset_userdata('last_uri');
-    echo $segment;
+    setLastUri('');
+    return $segment;
 }
 /**
  * retorna a url absoluta da miniatura de uma imagem ou vídeo gravado pelo usuário
@@ -181,6 +181,8 @@ function formataData($formato, $datetime){
 function mandaEmail($de, $para, $assunto, $mensagem, $nome='')
 {
     $ci =& get_instance();
+    $ci->load->library('email');
+    
     $config['charset']      = 'iso-8859-1';
     $config['protocol']     = 'smtp';
     $config['smtp_port']    = '25';
@@ -193,7 +195,7 @@ function mandaEmail($de, $para, $assunto, $mensagem, $nome='')
     $ci->email->subject(utf8_decode($assunto));
 
     $msg = utf8_decode($mensagem);
-
+    
     $ci->email->message($msg);
     try {
         $ci->email->send();
