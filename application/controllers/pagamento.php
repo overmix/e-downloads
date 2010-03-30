@@ -3,7 +3,6 @@ class Pagamento extends Controller {
     function Pagamento () {
         parent::Controller();
         $this->load->model('product');
-        $this->load->library('pgs');
     }
 
     function index ($produto=0) {
@@ -15,18 +14,27 @@ class Pagamento extends Controller {
             redirect('inicio'); die();
         }
         $produto = $produto ? $produto : $this->session->userdata('produto');
+        
         $dados = array(
             'id_produto'    => $produto,
             'id_usuario'    => $this->user->getUserIdByEmail($this->auth->userMail()),
             'pedido_em'     => date('Y-m-d H:i:s'),
             'status'        => 'Bloqueado',
         );
-
         $pedido = $this->product->geraPedido($dados);
-        
+
         if ($pedido) {
             $dadosUser = $this->user->getUserDataByEmail($this->auth->userMail());
             $dadosProd = $this->product->getProductById($produto);
+
+            $form_pgs = $this->save(array(
+                'pedido'    => $pedido,
+                'preco'     => $dadosProd['preco'],
+                'produto'   => $produto,
+            ));
+            $dados = array('form_pgs' => $form_pgs[1]);
+            $this->product->updatePedido(array('id_pedido'=> $pedido), $dados);
+
             $content = array(
                 'user_nome'         => $dadosUser['nome'],
                 'prod_nome'         => $dadosProd['nome'],
@@ -37,7 +45,7 @@ class Pagamento extends Controller {
                 'url'               => base_url() . 'downloads',
             );
             $msgUser = loadTemplate(TEMPLATEPATH . 'views/template_compra.html', $content);
-            
+
             $content = array(
                 'user_nome'         => $dadosUser['nome'],
                 'prod_nome'         => $dadosProd['nome'],
@@ -62,9 +70,27 @@ class Pagamento extends Controller {
                 'logged'        =>$this->auth->logged(),
                 'page_title'    =>'Pagamento',
                 'titulo'        =>'Efetuar compra',
-                'description'   =>'Efetuar compra'
+                'description'   =>'Efetuar compra',
+                'form_pgs'      =>$form_pgs[1],
             );
             $this->load->view('pagamento', $data);
         }
     }
+
+    function save($data, array $where = array(), $table = null){
+        $link = $data['pedido'];
+        $config = (object)$this->config->item('dados_pgs');
+        $params = array('email_cobranca'=>$config->email, 'ref_transacao'=>$link);
+        $this->load->library('pgs', $params);
+        $this->pgs->adicionar(array(
+            'descricao'     => 'Download de arquivo',
+            'quantidade'    => 1,
+            'valor'         => $data['preco'],
+            'id'            => $data['produto'],
+        ));
+        $return = array($link, $this->pgs->mostra(array('show_submit'=>FALSE, 'close_form'=>FALSE, 'print'=>FALSE)));
+        return $return;
+
+    }
+
 }
