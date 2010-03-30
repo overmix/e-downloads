@@ -57,7 +57,7 @@
                 <tr class="listimg1">
                     <td><input type="checkbox" name="edit[]" class="imgitem" value="<?=$product['id_produto'];?>" /></td>
                     <td>
-                        <a href="<?=getThumbUrlById($product['id_produto']);?>">
+                        <a href="<?php echo base_url();?>produto/editar/<?php echo $product['id_produto'];?>">
                             <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="<?=$product['image'];?>" />
                         </a>
                     </td>

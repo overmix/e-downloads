@@ -13,6 +13,7 @@ class Produto extends Controller {
 
 		/*-------------validações------------*/
         $rules['nome']           = "trim|required|xss_clean";
+        $rules['userfile']       = "trim|required";
         $rules['preco']          = "trim|required|callback_isnumeric_check";
         $rules['descricao']      = "trim|required|xss_clean";
 
@@ -21,6 +22,7 @@ class Produto extends Controller {
         $fields['nome']          = 'Nome';
         $fields['preco']         = 'Preço';
         $fields['descricao']     = 'Descrição';
+        $fields['userfile']     = 'Descrição';
         $this->validation->set_fields($fields);
 
         $this->validation->set_message('required', 'O campo <i>%s</i> não pode ser vazio');
@@ -41,9 +43,33 @@ class Produto extends Controller {
     }
 
     function novo () {
-        $data = array('logged'=>$this->auth->logged(),'page_title'=>'Adicionar produto', 'titulo'=>'ADICIONAR NOVO PRODUTO', 'description'=>'Adicionar novo produto');
+        $data = array(
+            'logged'        =>$this->auth->logged(),
+            'page_title'    =>'Adicionar produto',
+            'titulo'        =>'ADICIONAR NOVO PRODUTO',
+            'description'   =>'Adicionar novo produto',
+            'action'        =>'produto/salvar',
+        );
         $this->load->view('admin-produto', $data);
 
+    }
+
+    function editar($id)
+    {
+        $dados = $this->product->getProductById($id);
+        $data = array(
+            'logged'        =>$this->auth->logged(),
+            'page_title'    =>'Editar produto',
+            'titulo'        =>'EDITANDO O PRODUTO ' . $dados['nome'],
+            'description'   =>'Editar produto',
+            'action'        =>'produto/salvar/'.$id,
+        );
+        $this->validation->nome         = $dados['nome'];
+        $this->validation->preco        = $dados['preco'];
+        $this->validation->descricao    = $dados['descricao'];
+
+
+        $this->load->view('admin-produto', $data);
     }
 
     function enviaImagem()
@@ -78,8 +104,8 @@ class Produto extends Controller {
         $this->upload->set_max_width(0);
         $this->upload->set_max_height(0);
 
-        $this->upload->set_allowed_types('rar|tar|tgz|zip');
-
+        $this->upload->set_allowed_types('tgz|rar|tar|zip');
+        
         verifyPath($upload_path);
 
         if (!$this->upload->do_upload('arquivo')) {
@@ -100,25 +126,65 @@ class Produto extends Controller {
         $data += array('image_data' => $this->enviaImagem());
         $data += array('file_data'  => $this->enviaArquivo());
 
+        $imagename = isset($data['image_data']['file_name'])?$data['image_data']['file_name']:'';
+        $filename = isset($data['file_data']['file_name'])?$data['file_data']['file_name']:'';
         //caso a validação esteja ok
         if ($this->validation->run()) {
             $dados = array (
                 'nome'          =>$this->input->post('nome'),
                 'preco'         =>$this->input->post('preco'),
                 'descricao'     =>$this->input->post('descricao'),
-                'arquivo'       =>$data['file_data']['file_name'],
-                'image'         =>$data['image_data']['file_name'],
             );
+            if($imagename) $dados += array('image'=>$imagename);
+            if($filename)  $dados += array('arquivo'=>$filename);
+
             $dados = $this->input->xss_clean($dados);
 
             if (!$this->product->insertProduct($dados)) {
                 $this->messages->add('Erro ao gravar dados!');
-                redirect('admin', 'refresh'); die();
+                redirect('produto/novo', 'refresh'); die();
             }
+            $msg = sprintf('Produto %s adicionando com sucesso!', $dados['nome']);
+            $this->messages->add($msg);
         }
-        $msg = sprintf('Produto %s adicionando com sucesso!', $dados['nome']);
-        $this->messages->add($msg);
-        redirect('admin', 'refresh'); die();
+        redirect('produto/novo', 'refresh'); die();
+    }
+
+    function atualiza($id=0)
+    {
+        $data = array();
+        $dados = array();
+        if(!$id) redirect('admin', 'refresh'); die();
+
+        $prod = $this->product->getProductById($id);
+        if ($_FILES['userfile']['name'] AND !$_FILES['userfile']['error']) {
+            deleteImage($prod['image']);
+            $data += array('image_data' => $this->enviaImagem());
+        }
+        if ($_FILES['arquivo']['name'] AND !$_FILES['arquivo']['error']) {
+            unlink(FCPATH . $this->config->item('upload_path') . 'arquivo/'. $prod['arquivo']);
+            $data += array('file_data'  => $this->enviaArquivo());
+        }
+        $dados += array('arquivo' => isset($data['file_data']['file_name'])?$data['file_data']['file_name']:$prod['arquivo']);
+        $dados += array('image'   => isset($data['image_data']['file_name'])?$data['image_data']['file_name']:$prod['image']);
+
+        //caso a validação esteja ok
+        if ($this->validation->run()) {
+            $dados += array (
+                'nome'          =>$this->input->post('nome'),
+                'preco'         =>$this->input->post('preco'),
+                'descricao'     =>$this->input->post('descricao'),
+            );
+            $dados = $this->input->xss_clean($dados);
+
+            if ($id) {
+                if (!$this->product->updateProduct(array('id_produto'=>$id), $dados)) $this->messages->add('Erro ao atualizar dados!', 'error');
+            }else{
+                if (!$this->product->insertProduct($dados)) $this->messages->add('Erro ao gravar dados!', 'error');
+            }
+            redirect('admin', 'refresh'); die();
+        }
+        redirect('produto/editar/'.$id, 'refresh'); die();
     }
 
     function _createThumbnail($fileName) {

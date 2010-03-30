@@ -4,7 +4,7 @@
 
 <h2><?=output_msg($type = null);?></h2>
 <div id="contato" class="bg">
-    <?=form_open_multipart('produto/salvar');?>
+    <?=form_open_multipart($action);?>
         <fieldset>
             <legend>Cadastro</legend>            
 
@@ -16,15 +16,16 @@
             <label><span>Preço</span><input type="text" value="<?=$this->validation->preco;?>" name="preco" />
             <?=$this->validation->preco_error; ?></label>
 
-            <label><span>Descrição</span><input type="text" value="<?=$this->validation->descricao;?>" name="descricao" />
-            <?=$this->validation->descricao_error; ?></label>
+            <label><span>Descrição</span>
+                <textarea rows="4" cols="36" name="descricao"><?=$this->validation->descricao;?></textarea>
+                <?=$this->validation->descricao_error; ?></label>
 
             <?php echo form_upload('arquivo', 'Selecione um arquivo'); ?>
 
         </fieldset>
 
         <div class="botoes">
-            <?=anchor(base_url() . "home", "Voltar para a home", array('class'=>'btn'));?>
+            <?=anchor(base_url() . "admin", "Voltar para a administração", array('class'=>'btn'));?>
             <button type="submit">Cadastrar</button>
             <?=anchor("/", "Limpar", array('class'=>'btn', 'id'=>'resetar'));?>
         </div>

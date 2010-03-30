@@ -7,6 +7,17 @@ class Product extends Model {
     function Product() {
         parent::Model();
     }
+    
+    /**
+     * updateProduct Atualiza os dados do produto
+     * @param array $where Condição para atualização
+     * @param array $dados Dados para atualizar
+     * @return true caso tenha atualizado 
+     */
+    function updateProduct($where=null, $dados=null) {
+        $this->db->update('produtos', $dados, $where );
+        return (bool)$this->db->affected_rows();
+    }
 
     /**
      * insertProduct Adiciona novos produtos a base de dados

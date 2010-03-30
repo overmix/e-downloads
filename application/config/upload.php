@@ -1,7 +1,8 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $config['upload_path']      = 'uploads/';
-$config['allowed_types']    = 'gif|jpg|png';
+$config['allowed_types']    = 'gif|jpg|png|jpeg';
+$config['prefix_thumb']     = '_thumb';
 $config['overwrite']        = FALSE;
 
 /*

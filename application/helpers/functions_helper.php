@@ -153,6 +153,32 @@ function is_date($date)
 	return checkdate($Month,$Day,$Year);
 }
 
+function thumb_name($file)
+{
+    $ci =& get_instance();
+    $arr = explode('.', $file);
+    $ext = array_pop($arr);
+    $file = array();
+    foreach ($arr as $item) {
+        $file[] = $item;
+    }
+    return implode('.',$file) . $ci->config->item('prefix_thumb') . '.' . $ext;
+}
+
+function deleteImage($filename)
+{
+    $ci =& get_instance();
+    $image_path = FCPATH . $ci->config->item('upload_path') . 'image/';
+    $file = $image_path . $filename;
+    if (file_exists($file)) {
+        unlink($file);
+    }
+    $file = $image_path . thumb_name($filename);
+    if (file_exists($filename)) {
+        unlink($file);
+    }
+
+}
 /*
 * Função que formata de acordo com o formato da data passada.
 *
