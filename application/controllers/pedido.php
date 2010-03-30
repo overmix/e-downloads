@@ -60,8 +60,9 @@ class Pedido extends Controller {
         //caso a validação esteja ok
         if ($this->validation->run()) {
             $where = array('id_pedido' =>$this->input->post('id_pedido'));
+            $usar_ate = is_date($this->input->post('usar_ate')) ? $this->input->post('usar_ate') : null;
             $dados = array (
-                'usar_ate'  =>dateDb($this->input->post('usar_ate')),
+                'usar_ate'  =>dateDb($usar_ate),
                 'limite'    =>$this->input->post('limite'),
             );
 

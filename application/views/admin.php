@@ -96,7 +96,7 @@
                     <td style='text-align: center'><?=formataData("d/m/Y H:i",$product['atualizado']); ?></td>
                     <td><?=$product['descricao'] ?></td>
                     <td><a href="admin/reativarproduto/<?=$product['id_produto'];?>" class="reativar">Re-ativar</a></td>
-                    <td><a href="admin/remover/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
+                    <td><a href="admin/removerproduto/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
