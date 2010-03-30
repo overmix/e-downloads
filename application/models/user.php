@@ -53,17 +53,15 @@ class User extends Model {
      * @return Array();
      */
     function getUserDownloads() {
-        $where = array(
-            'id_usuario' =>  $this->getUserIdByEmail($this->auth->userMail()),
-            'DATEDIFF(liberado_em, pedido_em) >= '  => 0,    // que tenha sido liberado
-            //'DATEDIFF(usar_ate, liberado_em) >= '   => 0,
-            'limite - downloads >='                 => 0,
-            'pedidos.status'                        => 'Ativo',
-        );
-        $this->db->select('pedidos.*, produtos.*')
-            ->join('produtos', 'produtos.id_produto = pedidos.id_produto');
-
-        return $this->db->getwhere('pedidos', $where)->result_array();
+        $sql = "SELECT `pedidos`.*, `produtos`.*
+        FROM (`pedidos`) JOIN `produtos` ON `produtos`.`id_produto` = `pedidos`.`id_produto`
+        WHERE `id_usuario` = " . $this->getUserIdByEmail($this->auth->userMail()) . "
+        AND DATEDIFF(liberado_em, pedido_em) >=  0
+        AND IF(DATE_ADD(`usar_ate`, INTERVAL 1 DAY),DATEDIFF(usar_ate, liberado_em) >= 0, TRUE)
+        AND IF(`limite` > 0,`limite` - downloads > 0, TRUE)
+        AND `pedidos`.`status` = 'Ativo'";
+        
+        return $this->db->query($sql)->result_array();
     }
 
     /**

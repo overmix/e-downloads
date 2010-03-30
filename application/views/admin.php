@@ -33,7 +33,7 @@
                     <td><?php echo $pedido['downloads'];?></td>
                     <td><?php echo $pedido['limite'];?></td>
                     <td><a href="<?php echo base_url();?>admin/liberarpedido/<?=$pedido['id_pedido'];?>" class="liberar">Liberar</a></td>
-                    <td><a href="<?php echo base_url();?>admin/remover/<?=$pedido['id_pedido'];?>" class="remover">Remover</a></td>
+                    <td><a href="<?php echo base_url();?>admin/removerpedido/<?=$pedido['id_pedido'];?>" class="remover">Remover</a></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -61,10 +61,11 @@
                             <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="<?=$product['image'];?>" />
                         </a>
                     </td>
+                    <td style='text-align: center'><?=$product['nome']; ?></td>
                     <td style='text-align: center'><?=formataData("d/m/Y H:i",$product['atualizado']); ?></td>
                     <td><?=$product['descricao'] ?></td>
-                    <td><a href="admin/desativar/<?=$product['id_produto'];?>" class="desativar">Desativar</a></td>
-                    <td><a href="admin/remover/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
+                    <td><a href="admin/desativarproduto/<?=$product['id_produto'];?>" class="desativar">Desativar</a></td>
+                    <td><a href="admin/removerproduto/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -94,7 +95,7 @@
                     </td>
                     <td style='text-align: center'><?=formataData("d/m/Y H:i",$product['atualizado']); ?></td>
                     <td><?=$product['descricao'] ?></td>
-                    <td><a href="admin/reativar/<?=$product['id_produto'];?>" class="reativar">Re-ativar</a></td>
+                    <td><a href="admin/reativarproduto/<?=$product['id_produto'];?>" class="reativar">Re-ativar</a></td>
                     <td><a href="admin/remover/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
                 </tr>
                 <?php endforeach; ?>

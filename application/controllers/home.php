@@ -5,6 +5,7 @@ class Home extends Controller {
         parent::Controller();
         $this->load->library('lightbox');
         $this->load->model('product');
+        $this->load->config('upload');
     }
     
     function index() {

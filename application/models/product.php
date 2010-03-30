@@ -53,23 +53,23 @@ class Product extends Model {
      * @param int $id Id do produto que s
      * @return <type>
      */
-    function getAllowFileDownloadById($id)
+    function getUserDownloadById($id)
     {
         $ci =& get_instance();
         $ci->load->model('user');
-        
-        if(!$id) return;
-        $where = array(
-            'id_usuario' =>  $ci->user->getUserIdByEmail($this->auth->userMail()),
-            'DATEDIFF(liberado_em, pedido_em) >= ' => 0,    // que tenha sido liberado
-            'DATEDIFF(usar_ate, liberado_em) >= ' => 0,
-            'limite - downloads >' => 0,
-            'produtos.id_produto' => $id
-        );
-        $this->db->select('produtos.id_produto, produtos.arquivo')
-            ->join('produtos', 'produtos.id_produto = pedidos.id_produto');
 
-        $return = $this->db->getwhere('pedidos', $where)->row();
+        if(!$id) return;
+        $sql = "SELECT `produtos`.`id_produto`, `produtos`.`arquivo`
+        FROM (`pedidos`)
+        JOIN `produtos` ON `produtos`.`id_produto` = `pedidos`.`id_produto`
+        WHERE `id_usuario` = '" . $ci->user->getUserIdByEmail($this->auth->userMail()) . "'
+        AND DATEDIFF(liberado_em, pedido_em) >=  0
+        AND IF(DATE_ADD(`usar_ate`, INTERVAL 1 DAY), DATEDIFF(usar_ate, liberado_em) >= 0, TRUE)
+        AND IF(`limite` > 0,`limite` - downloads > 0, TRUE)
+        AND `pedidos`.`status` = 'Ativo'
+        AND `produtos`.`id_produto` = '" .$id. "'";
+
+        $return = $this->db->query($sql)->row();
         return $return ? $return->arquivo : FALSE;
     }
 

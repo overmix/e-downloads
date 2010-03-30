@@ -4,6 +4,7 @@ class Downloads extends Controller {
         parent::Controller();
         $this->load->model('user');
         $this->load->model('product');
+        $this->load->config('upload');
     }
 
     function index ($msg='') {
@@ -20,7 +21,7 @@ class Downloads extends Controller {
         if (!$this->auth->logged()) redirect('inicio');
         $dir= make_path($this->config->item('upload_path') . 'arquivo/');
 
-        $file = $this->product->getAllowFileDownloadById($id);
+        $file = $this->product->getUserDownloadById($id);
 
         if ($file) {
             $file = $dir . $file;

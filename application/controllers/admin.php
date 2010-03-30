@@ -51,7 +51,7 @@ class Admin extends Controller {
         $this->load->view('admin-users', $data);
     }
 
-    function desativar($id=0) {
+    function desativarproduto($id=0) {
         $ids = $id?array($id):$this->input->post('edit');
         foreach($ids as $id)
         {
@@ -67,7 +67,7 @@ class Admin extends Controller {
         redirect('admin'); die();
     }
     
-    function reativar($id=0) {
+    function reativarproduto($id=0) {
         $ids = $id?array($id):$this->input->post('edit');
         foreach($ids as $id)
         {
@@ -217,7 +217,7 @@ class Admin extends Controller {
         return !$this->user->checaUser(array('email'=>$str));
     }
 
-    function remover ($id)
+    function removerpedido ($id)
     {
         $pedido = $this->product->getPedidoById($id);
         if($pedido['id_pedido'])
@@ -225,6 +225,18 @@ class Admin extends Controller {
             $this->db->where(array('id_pedido'=>$id));
             $this->db->delete('pedidos');
             $this->messages->add("O pedido n° $id foi deletado com sucesso.", 'done');
+        }
+        redirect('admin'); die();
+    }
+
+    function removerproduto ($id)
+    {
+        $produto = $this->product->getProductById($id);
+        if($produto['id_produto'])
+        {
+            $this->db->where(array('id_produto'=>$id));
+            $this->db->delete('produtos');
+            $this->messages->add("O produto {$produto['nome']} foi deletado com sucesso.", 'done');
         }
         redirect('admin'); die();
     }

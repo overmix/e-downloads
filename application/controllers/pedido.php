@@ -5,6 +5,7 @@ class Pedido extends Controller {
         $this->load->library('validation');
         $this->load->model('user');
         $this->load->model('product');
+        $this->load->config('upload');
 
 		/*-------------validações------------*/
         $rules['usar_ate']      = "trim|required";
