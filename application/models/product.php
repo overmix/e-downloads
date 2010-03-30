@@ -9,6 +9,16 @@ class Product extends Model {
     }
 
     /**
+     * insertProduct Adiciona novos produtos a base de dados
+     * @return <type> Id do produto recém inserido
+     */
+    function insertProduct() {
+        $this->dados = is_array(func_get_arg(0))?func_get_arg(0):func_get_args();
+        $this->db->insert('produtos', $this->dados);
+        return $this->db->insert_id();
+    }
+
+    /**
      * getAllProducts Retorna todos os dados de todos os produtos em forma de array
      * @param array $where Array contendo os critérios de busca
      * @param int $limit limit de itens para retornar, null para todos
@@ -86,16 +96,38 @@ class Product extends Model {
     {
         $ci =& get_instance();
         $ci->load->model('user');
-        if(!$id) return;
+        if(!$pedido) return;
         $where = array(
-            'id_usuario' =>  $ci->user->getUserIdByEmail($this->auth->userMail()),
-            'produtos.id_pedido' => $pedido,
+            'id_pedido' => $pedido,
         );
-        $this->db->select('produtos.id_produto, produtos.arquivo')
+        $this->db->select('pedidos.*,  produtos.id_produto, produtos.arquivo')
             ->join('produtos', 'produtos.id_produto = pedidos.id_produto');
 
-        $return = $this->db->getwhere('pedidos', $where)->row();
-        return $return ? $return->id_pedido : FALSE;
+        $return = $this->db->getwhere('pedidos', $where)->row_array();
+        if (!count($return)) {
+            return array();
+        }
+        return $return;
+
+    }
+
+    function getPedidosByUserId($userId)
+    {
+        $ci =& get_instance();
+        $ci->load->model('user');
+        if(!$userId) return;
+        $where = array(
+            'id_usuario' =>  $userId,
+        );
+        $this->db->select('pedidos.*,  produtos.id_produto, produtos.arquivo')
+            ->join('produtos', 'produtos.id_produto = pedidos.id_produto');
+
+        $return = $this->db->getwhere('pedidos', $where)->row_array();
+        if (!count($return)) {
+            return array();
+        }
+        return $return;
+
     }
 
     /**
@@ -153,7 +185,8 @@ class Product extends Model {
      */
     function geraPedido($dados)
     {
-        return $this->db->insert('pedidos', $dados);
+        $return = $this->db->insert('pedidos', $dados);
+        return $return ? $this->db->insert_id() : FALSE;
     }
 
 }

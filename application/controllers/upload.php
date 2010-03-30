@@ -14,40 +14,25 @@ class Upload extends Controller {
         $tipo = $this->input->post('tipo');
 
         /*-------------validações------------*/
-        $rules['nome']		= "trim|required|xss_clean";
-        $rules['local']		= "trim|required|xss_clean";
-        $rules['userfile']  = $tipo==2?"trim|required|callback_link_check|xss_clean":"trim";
+        $rules['titulo']	= "trim|required|xss_clean";
+        $rules['preco']		= "trim|required|xss_clean";
+        $rules['descricao'] = "trim|required|xss_clean";
         $this->validation->set_rules($rules);
 
-        $fields['nome']		= 'Nome';
-        $fields['local']	= 'Onde foi feito';
-        $fields['userfile']	= $tipo==2?"Video":"Foto";
+        $fields['titulo']		= 'Título';
+        $fields['preco']        = 'Preço';
+        $fields['descricao']	= 'Descrição';
         $this->validation->set_fields($fields);
 
         $this->validation->set_message('required', 'O campo <i>%s</i> não pode ser vazio');
         $this->validation->set_message('xss_clean', 'O campo <i>%s</i> possue caracteres não permitidos!');
-        $this->validation->set_message('link_check', 'O link indicado não pertence ao youtube!');
         $this->validation->set_error_delimiters('<div class="error">', '</div>');
 
         $this->auth->verificaLogin();
 
     }
 
-    function link_check($str) {
-        return preg_match('/youtube\.com\/watch/i', $str)?true:false;
-    }
-
     function index($tipo=1) {
-        if( $tipo==1 && !$this->user->allowImage() ) {
-            $this->messages->add('Máximo permitido é de 3 imagens.');
-            redirect('profile');
-            die();
-        }else if( $tipo == 2 && !$this->user->allowVideo() ) {
-            $this->messages->add('Máximo permitido é de 1 vídeo.');
-            redirect('profile');
-            die();
-        }
-
         $infocat = $this->config->item('image_categories_info');
 
         $data = array(

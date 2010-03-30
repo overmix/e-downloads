@@ -22,8 +22,7 @@ class Pagamento extends Controller {
             'status'        => 'Bloqueado',
         );
 
-        //$pedido = $this->product->geraPedido($dados);
-        $pedido = 1;
+        $pedido = $this->product->geraPedido($dados);
         
         if ($pedido) {
             $dadosUser = $this->user->getUserDataByEmail($this->auth->userMail());
@@ -49,13 +48,23 @@ class Pagamento extends Controller {
 
             mandaEmail($this->config->item('admin_email'), $this->auth->userMail(), 'Pedido de download', $msgUser, $this->config->item('admin_nome'));
             mandaEmail($this->config->item('admin_email'), $this->config->item('admin_email'), 'Olá! tem um pedido pra você!', $msgEdownloads, $this->config->item('admin_nome'));
+            
+            // seleciona o pagamento pelo n° do pedido
+            $pagamento = $this->product->getPedidoById($pedido);
+
+            // se não tiver pagamento, vai para a home
+            if (!count($pagamento)) {
+                redirect('home'); die();
+            }
+
+            // caso contrário, chama o template de pagamento
+            $data = array(
+                'logged'        =>$this->auth->logged(),
+                'page_title'    =>'Pagamento',
+                'titulo'        =>'Efetuar compra',
+                'description'   =>'Efetuar compra'
+            );
+            $this->load->view('pagamento', $data);
         }
-        $data = array(
-            'logged'        =>$this->auth->logged(),
-            'page_title'    =>'Pagamento',
-            'titulo'        =>'Efetuar compra',
-            'description'   =>'Efetuar compra'
-        );
-        $this->load->view('pagamento', $data);
     }
 }

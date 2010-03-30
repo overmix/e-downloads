@@ -28,8 +28,8 @@
                     <td><a href="<?php echo base_url();?>pedido/index/<?php echo $pedido['id_pedido'];?>" title="Visualizar pedido"><?php echo $pedido['id_pedido'];?></a></td>
                     <td><a href="<?php echo base_url();?>usuario/index/<?php echo $pedido['id_usuario'];?>" title="Email: <?php echo $pedido['email'];?> - Telefone: <?php echo $pedido['telefone'];?>"><?php echo $pedido['nome'];?></a></td>
                     <td style='text-align: center'><?=formataData("d/m/Y H:i",$pedido['pedido_em']); ?></td>
-                    <td style='text-align: center'><?=is_date($pedido['liberado_em']) ? formataData('d/m/Y H:i', $pedido['liberado_em']) : '00-00-0000' ;?></td>
-                    <td style='text-align: center'><?=is_date($pedido['usar_ate']) ? $pedido['usar_ate'] : '00-00-0000' ;?></td>
+                    <td style='text-align: center'><?=is_date($pedido['liberado_em']) ? formataData('d/m/Y H:i', $pedido['liberado_em']) : '-' ;?></td>
+                    <td style='text-align: center'><?=is_date($pedido['usar_ate']) ? $pedido['usar_ate'] : '-' ;?></td>
                     <td><?php echo $pedido['downloads'];?></td>
                     <td><?php echo $pedido['limite'];?></td>
                     <td><a href="<?php echo base_url();?>admin/liberarpedido/<?=$pedido['id_pedido'];?>" class="liberar">Liberar</a></td>
@@ -44,6 +44,7 @@
     <div id="painel-2" class="gallery">
         <?=form_open("admin/desativar", array('id' => 'form_obj1'));?>
         <input type="submit" id="aprovartodos" value="Desativar todos os selecionados" />
+        <?php echo anchor('produto/novo', 'Adicionar novo produto', array('title'=> 'Adicionar novo produto'));?>
         <table>
             <thead>
                 <tr>
@@ -69,6 +70,7 @@
             </tbody>
         </table>
         <input type="submit" value="Aprovar todos os selecionados" />
+        <?php echo anchor('produto/novo', 'Adicionar novo produto', array('title'=> 'Adicionar novo produto'));?>
         </form>
     </div>
     <div id="painel-3" class="gallery">

@@ -55,13 +55,14 @@ class User extends Model {
     function getUserDownloads() {
         $where = array(
             'id_usuario' =>  $this->getUserIdByEmail($this->auth->userMail()),
-            'DATEDIFF(liberado_em, pedido_em) >= ' => 0,    // que tenha sido liberado
-            'DATEDIFF(usar_ate, liberado_em) >= ' => 0,
-            'limite - downloads >' => 0,
+            'DATEDIFF(liberado_em, pedido_em) >= '  => 0,    // que tenha sido liberado
+            //'DATEDIFF(usar_ate, liberado_em) >= '   => 0,
+            'limite - downloads >='                 => 0,
+            'pedidos.status'                        => 'Ativo',
         );
         $this->db->select('pedidos.*, produtos.*')
             ->join('produtos', 'produtos.id_produto = pedidos.id_produto');
-        
+
         return $this->db->getwhere('pedidos', $where)->result_array();
     }
 

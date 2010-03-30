@@ -571,7 +571,6 @@ class CI_Upload {
 					return FALSE;
 				}
 			}
-
 			if (is_array($mime))
 			{
 				if (in_array($this->file_type, $mime, TRUE))
@@ -930,15 +929,21 @@ class CI_Upload {
 
 		// file name override, since the exact name is provided, no need to
 		// run it through a $this->mimes check.
+        /*
 		if ($this->file_name != '')
 		{
 			$filename = $this->file_name;
 		}
-
+        */
+        
 		$filename .= '.'.$ext;
 		
 		return $filename;
 	}
+    
+    public function get_upload_path () {
+        return $this->upload_path;
+    }
 
 	// --------------------------------------------------------------------
 

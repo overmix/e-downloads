@@ -41,11 +41,11 @@ class Pedido extends Controller {
         $this->validation->pedido_em = formataData('d/m/Y H:i',$data['pedido']['pedido_em']);
         $this->validation->liberado_em = is_date($data['pedido']['liberado_em']) ?
 										formataData('d/m/Y H:i', $data['pedido']['liberado_em']) :
-										'0000-00-00 00:00';
+										'dd-mm-aaaa 00:00';
         $this->validation->downloads = $data['pedido']['downloads'];
         $this->validation->usar_ate = is_date($data['pedido']['usar_ate']) ? 
 										formataData('d/m/Y', $data['pedido']['usar_ate']) :
-										'0000-00-00';
+										'dd-mm-aaaa';
         $this->validation->limite = $data['pedido']['limite'];
         //echo "<pre>"; print_r($data); echo "</pre>"; die('fim');
         $this->load->view('admin-pedido', $data);

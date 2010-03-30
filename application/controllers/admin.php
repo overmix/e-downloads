@@ -7,6 +7,7 @@ class Admin extends Controller {
         $this->load->library('lightbox');
         $this->load->model('product');
         $this->load->model('user');
+        $this->load->config('upload');
 
 		/*-------------validações------------*/
         $rules['nome']		= "trim|required|xss_clean";
@@ -218,22 +219,12 @@ class Admin extends Controller {
 
     function remover ($id)
     {
-        $media = getMediaById($id);
-        if($media['id']) 
+        $pedido = $this->product->getPedidoById($id);
+        if($pedido['id_pedido'])
         {
-            if( !(bool)$media['status'] )
-            {
-                if( $media['media_type']==1 ) {
-                    $file = array(getMediaPathById($id), getThumbPathById($id));
-                    array_walk($file, create_function('$item', 'unlink($item);'));
-                }
-                $texto = $media['media_type']==1?"Imagem excluída":"Vídeo excluído";
-                if($this->user->deleteImg($id)){
-                    $this->messages->add($texto . ' com sucesso!', 'success'); // ser user message
-                }
-            }else{
-                $this->messages->add('Esta imagem não pode ser excluída!<br />Ela já foi aprovada e está participando da votação.', 'warning'); // ser user message
-            }
+            $this->db->where(array('id_pedido'=>$id));
+            $this->db->delete('pedidos');
+            $this->messages->add("O pedido n° $id foi deletado com sucesso.", 'done');
         }
         redirect('admin'); die();
     }
