@@ -49,7 +49,7 @@
             <thead>
                 <tr>
                     <th><input type="checkbox" name="chkallrecents" id="chkallrecents" /></th><th>Imagem</th><th>Título</th>
-                    <th>Atualizado em</th><th>Descrição</th><th colspan="2">Ações</th>
+                    <th>Atualizado em</th><th>Descrição</th><th colspan="3">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,6 +64,7 @@
                     <td style='text-align: center'><?=$product['nome']; ?></td>
                     <td style='text-align: center'><?=formataData("d/m/Y H:i",$product['atualizado']); ?></td>
                     <td><?=$product['descricao'] ?></td>
+                    <td><a href="<?php echo base_url();?>produto/editar/<?php echo $product['id_produto'];?>">Editar</a></td>
                     <td><a href="admin/desativarproduto/<?=$product['id_produto'];?>" class="desativar">Desativar</a></td>
                     <td><a href="admin/removerproduto/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
                 </tr>
@@ -81,7 +82,7 @@
             <thead>
                 <tr>
                     <th><input type="checkbox" name="chkallrecents" id="chkallrecents" /></th><th>Imagem</th><th>Título</th>
-                    <th>Atualizado em</th><th>Descrição</th><th colspan="2">Ações</th>
+                    <th>Atualizado em</th><th>Descrição</th><th colspan="3">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,8 +94,10 @@
                             <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="<?=$product['image'];?>" />
                         </a>
                     </td>
+                    <td style='text-align: center'><?=$product['nome']; ?></td>
                     <td style='text-align: center'><?=formataData("d/m/Y H:i",$product['atualizado']); ?></td>
                     <td><?=$product['descricao'] ?></td>
+                    <td><a href="<?php echo base_url();?>produto/editar/<?php echo $product['id_produto'];?>">Editar</a></td>
                     <td><a href="admin/reativarproduto/<?=$product['id_produto'];?>" class="reativar">Re-ativar</a></td>
                     <td><a href="admin/removerproduto/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
                 </tr>

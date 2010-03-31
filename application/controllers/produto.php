@@ -66,6 +66,7 @@ class Produto extends Controller {
             'titulo'        =>'EDITANDO O PRODUTO ' . $dados['nome'],
             'description'   =>'Editar produto',
             'action'        =>'produto/atualizar/'.$id,
+            'product'       =>$dados,
         );
         $this->validation->nome         = $dados['nome'];
         $this->validation->preco        = $dados['preco'];
@@ -142,12 +143,14 @@ class Produto extends Controller {
 
             $dados = $this->input->xss_clean($dados);
 
-            if (!$this->product->insertProduct($dados)) {
+            $id = $this->product->insertProduct($dados);
+            if (!$id) {
                 $this->messages->add('Erro ao gravar dados!', 'error');
                 redirect('produto/novo'); die();
             }
             $msg = sprintf('Produto <span>"%s"</span> adicionando com sucesso!', $dados['nome']);
             $this->messages->add($msg, 'done');
+            redirect('produto/editar/'. $id); die();
         }
         redirect('produto/novo'); die();
     }

@@ -6,8 +6,10 @@
 <div id="contato" class="bg">
     <?=form_open_multipart($action);?>
         <fieldset>
-            <legend>Cadastro</legend>            
-
+            <legend><?php echo $page_title;?></legend>
+            <?php if(isset($product)){?>
+            <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="foto 1" title="<?=$product['nome']?>" />
+            <?php };?>
             <?php echo form_upload('userfile', 'Selecione uma imagem'); ?>
             <?=$this->validation->userfile_error; ?>
 
