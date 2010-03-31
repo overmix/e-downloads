@@ -13,19 +13,23 @@ class Produto extends Controller {
 
 		/*-------------validações------------*/
         $rules['nome']           = "trim|required|xss_clean";
-        $rules['userfile']       = "trim|required";
+        $rules['userfile']       = "trim|required|isset";
+        $rules['arquivo']        = "trim|required|isset";
         $rules['preco']          = "trim|required|callback_isnumeric_check";
         $rules['descricao']      = "trim|required|xss_clean";
+        
 
         $this->validation->set_rules($rules);
 
         $fields['nome']          = 'Nome';
         $fields['preco']         = 'Preço';
         $fields['descricao']     = 'Descrição';
-        $fields['userfile']     = 'Descrição';
+        $fields['userfile']      = 'Imagem';
+        $fields['arquivo']       = 'Arquivo';
         $this->validation->set_fields($fields);
 
         $this->validation->set_message('required', 'O campo <i>%s</i> não pode ser vazio');
+        $this->validation->set_message('isset', 'O campo <i>%s</i> não pode ser vazio');
         $this->validation->set_message('isnumeric_check', 'O campo <i>%s</i> precisa conter um valor numérico válido.');
         $this->validation->set_error_delimiters('<small class="error">', '</small>');
 
@@ -123,13 +127,15 @@ class Produto extends Controller {
     {
         $data = array('logged'=>$this->auth->logged(),'page_title'=>'Adicionar produto', 'titulo'=>'ADICIONAR NOVO PRODUTO', 'description'=>'Adicionar novo produto');
 
-        $data += array('image_data' => $this->enviaImagem());
-        $data += array('file_data'  => $this->enviaArquivo());
+        //$data += array('image_data' => $this->enviaImagem());
+        //$data += array('file_data'  => $this->enviaArquivo());
 
         $imagename = isset($data['image_data']['file_name'])?$data['image_data']['file_name']:'';
         $filename = isset($data['file_data']['file_name'])?$data['file_data']['file_name']:'';
+
         //caso a validação esteja ok
         if ($this->validation->run()) {
+            die('blz!');
             $dados = array (
                 'nome'          =>$this->input->post('nome'),
                 'preco'         =>$this->input->post('preco'),
@@ -147,6 +153,7 @@ class Produto extends Controller {
             $msg = sprintf('Produto %s adicionando com sucesso!', $dados['nome']);
             $this->messages->add($msg);
         }
+        echo "<pre>"; print_r($this->validation->error_string); echo "</pre>"; die('fim');
         redirect('produto/novo', 'refresh'); die();
     }
 
