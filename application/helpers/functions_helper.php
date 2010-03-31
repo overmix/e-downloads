@@ -174,10 +174,9 @@ function deleteImage($filename)
         unlink($file);
     }
     $file = $image_path . thumb_name($filename);
-    if (file_exists($filename)) {
+    if (file_exists($file)) {
         unlink($file);
     }
-
 }
 /*
 * Função que formata de acordo com o formato da data passada.

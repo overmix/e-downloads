@@ -9,7 +9,8 @@
             <legend>Cadastro</legend>            
 
             <?php echo form_upload('userfile', 'Selecione uma imagem'); ?>
-            
+            <?=$this->validation->userfile_error; ?>
+
             <label><span>Nome do produto</span><input type="text" value="<?=$this->validation->nome;?>" name="nome" />
             <?=$this->validation->nome_error; ?></label>
 
@@ -21,7 +22,7 @@
                 <?=$this->validation->descricao_error; ?></label>
 
             <?php echo form_upload('arquivo', 'Selecione um arquivo'); ?>
-
+            <?=$this->validation->arquivo_error; ?>
         </fieldset>
 
         <div class="botoes">

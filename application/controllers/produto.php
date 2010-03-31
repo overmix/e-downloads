@@ -20,7 +20,6 @@ class Produto extends Controller {
         $rules['descricao']      = "trim|required|xss_clean";
         $rules['userfile']       = "trim|required";
         $rules['arquivo']        = "trim|required";
-        
 
         $this->validation->set_rules($rules);
 
@@ -34,7 +33,6 @@ class Produto extends Controller {
         $this->validation->set_message('required', 'O campo <i>%s</i> não pode ser vazio');
         $this->validation->set_message('isnumeric_check', 'O campo <i>%s</i> precisa conter um valor numérico válido.');
         $this->validation->set_error_delimiters('<small class="error">', '</small>');
-
     }
 
     function isnumeric_check($digit)
@@ -67,12 +65,11 @@ class Produto extends Controller {
             'page_title'    =>'Editar produto',
             'titulo'        =>'EDITANDO O PRODUTO ' . $dados['nome'],
             'description'   =>'Editar produto',
-            'action'        =>'produto/salvar/'.$id,
+            'action'        =>'produto/atualizar/'.$id,
         );
         $this->validation->nome         = $dados['nome'];
         $this->validation->preco        = $dados['preco'];
         $this->validation->descricao    = $dados['descricao'];
-
 
         $this->load->view('admin-produto', $data);
     }
@@ -146,21 +143,23 @@ class Produto extends Controller {
             $dados = $this->input->xss_clean($dados);
 
             if (!$this->product->insertProduct($dados)) {
-                $this->messages->add('Erro ao gravar dados!');
-                redirect('produto/novo', 'refresh'); die();
+                $this->messages->add('Erro ao gravar dados!', 'error');
+                redirect('produto/novo'); die();
             }
-            $msg = sprintf('Produto %s adicionando com sucesso!', $dados['nome']);
-            $this->messages->add($msg);
+            $msg = sprintf('Produto <span>"%s"</span> adicionando com sucesso!', $dados['nome']);
+            $this->messages->add($msg, 'done');
         }
-
         redirect('produto/novo'); die();
     }
 
-    function atualiza($id=0)
+    function atualizar($id=0)
     {
         $data = array();
         $dados = array();
-        if(!$id) redirect('admin', 'refresh'); die();
+        
+        if(!$id) {
+            redirect('admin'); die();
+        }
 
         $prod = $this->product->getProductById($id);
         if ($_FILES['userfile']['name'] AND !$_FILES['userfile']['error']) {
@@ -171,8 +170,9 @@ class Produto extends Controller {
             unlink(FCPATH . $this->config->item('upload_path') . 'arquivo/'. $prod['arquivo']);
             $data += array('file_data'  => $this->enviaArquivo());
         }
-        $dados += array('arquivo' => isset($data['file_data']['file_name'])?$data['file_data']['file_name']:$prod['arquivo']);
-        $dados += array('image'   => isset($data['image_data']['file_name'])?$data['image_data']['file_name']:$prod['image']);
+
+        $_POST['userfile'] = $_FILES['userfile']['name'] ? $_FILES['userfile']['name'] : $prod['image'];
+        $_POST['arquivo']  = $_FILES['arquivo']['name']  ? $_FILES['arquivo']['name']  : $prod['arquivo'];
 
         //caso a validação esteja ok
         if ($this->validation->run()) {
@@ -180,17 +180,21 @@ class Produto extends Controller {
                 'nome'          =>$this->input->post('nome'),
                 'preco'         =>$this->input->post('preco'),
                 'descricao'     =>$this->input->post('descricao'),
+                'image'         =>$this->input->post('userfile'),
+                'arquivo'       =>$this->input->post('arquivo'),
             );
+
             $dados = $this->input->xss_clean($dados);
 
-            if ($id) {
-                if (!$this->product->updateProduct(array('id_produto'=>$id), $dados)) $this->messages->add('Erro ao atualizar dados!', 'error');
-            }else{
-                if (!$this->product->insertProduct($dados)) $this->messages->add('Erro ao gravar dados!', 'error');
+            if (!$this->product->updateProduct(array('id_produto'=>$id), $dados))
+            {
+                $this->messages->add('Erro ao atualizar dados!', 'error');
+                redirect('admin', 'refresh'); die();
             }
-            redirect('admin', 'refresh'); die();
+            $msg = sprintf('Produto %s foi atualizado com sucesso!', $dados['nome']);
+            $this->messages->add($msg, 'done');
         }
-        redirect('produto/editar/'.$id, 'refresh'); die();
+        redirect('produto/editar/'.$id); die();
     }
 
     function _createThumbnail($fileName) {
