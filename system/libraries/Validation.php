@@ -190,8 +190,8 @@ class CI_Validation {
 		{
 			return FALSE;
 		}
-	
-		// Load the language file containing error messages
+
+        // Load the language file containing error messages
 		$this->CI->lang->load('validation');
 							
 		// Cycle through the rules and test for errors
