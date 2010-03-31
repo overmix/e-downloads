@@ -11,10 +11,11 @@
     <p>Preço: <?=$pedido['preco']?></p>
     <p>Descrição: <?=getDescription($pedido['id_produto'])?></p>
 
+        <?=form_open("pedido/editar", array('id' => 'form_obj'));?>
     <fieldset>
         <legend>Editar dados do pedido</legend>
-        <?=form_open("pedido/editar", array('id' => 'form_obj'));?>
-            <input type="hidden" name="id_pedido" value="<?php echo $pedido['id_pedido'];?>" />
+
+        <input type="hidden" name="id_pedido" value="<?php echo $pedido['id_pedido'];?>" />
             <ul>
                 <li><span>Pedido em:</span>
                     <strong class="txt"><?=$this->validation->pedido_em;?></strong></li>
@@ -39,11 +40,12 @@
                     <a href="#" title=" " class="edit">editar</a><?=$this->validation->limite_error; ?>
                 </li>
             </ul>
+        </fieldset>
+        <div class="botoes">
+            <?=anchor(base_url() . "admin", "Voltar para a administração", array('class'=>'btn'));?>
             <button type="submit" class="btn">Salvar alterações</button>
-        </form>
-    </fieldset>
-    <p><?php echo anchor('admin/index', 'Voltar', array('title'=>'Voltar para a administração'));?>
-     </p>
+        </div>
+    </form>
 </div>
 
 <?php include ("admin-footer.php");?>

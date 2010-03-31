@@ -30,7 +30,6 @@
         <div class="botoes">
             <?=anchor(base_url() . "admin", "Voltar para a administração", array('class'=>'btn'));?>
             <button type="submit">Cadastrar</button>
-            <?=anchor("/", "Limpar", array('class'=>'btn', 'id'=>'resetar'));?>
         </div>
 
     </form>

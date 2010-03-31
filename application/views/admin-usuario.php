@@ -44,7 +44,11 @@
                 </label>
             </fieldset>
 
-            <button type="submit" class="btn">Salvar alterações</button>
+            <div class="botoes">
+                <?=anchor(base_url() . "admin", "Voltar para a administração", array('class'=>'btn'));?>
+                <button type="submit" class="btn">Salvar alterações</button>
+            </div>
+            
         </form>
     </div>
 
