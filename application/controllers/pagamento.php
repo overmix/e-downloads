@@ -28,6 +28,7 @@ class Pagamento extends Controller {
             $dadosProd = $this->product->getProductById($produto);
 
             $form_pgs = $this->save(array(
+                'nome'      => $dadosProd['nome'],
                 'pedido'    => $pedido,
                 'preco'     => $dadosProd['preco'],
                 'produto'   => $produto,
@@ -83,7 +84,7 @@ class Pagamento extends Controller {
         $params = array('email_cobranca'=>$config->email, 'ref_transacao'=>$link);
         $this->load->library('pgs', $params);
         $this->pgs->adicionar(array(
-            'descricao'     => 'Download de arquivo',
+            'descricao'     => $data['nome'],
             'quantidade'    => 1,
             'valor'         => $data['preco'],
             'id'            => $data['produto'],

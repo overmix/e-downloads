@@ -3,6 +3,13 @@
 <h1><?=$titulo;?></h1>
 
 <h2><?=output_msg($type = null);?></h2>
+<script type="text/javascript">
+    jQuery(function(){
+        $('#menoridade').click(function(){$('#dadosresponsavel').slideDown()})
+        $('#maioridade').click(function(){$('#dadosresponsavel').slideUp()})
+        if($('#menoridade').attr('checked')){$('#dadosresponsavel').slideDown()}
+    });
+</script>
 <div id="contato" class="bg">
     <?=form_open_multipart($action);?>
         <fieldset>
@@ -23,7 +30,18 @@
                 <textarea rows="4" cols="36" name="descricao"><?=$this->validation->descricao;?></textarea>
                 <?=$this->validation->descricao_error; ?></label>
 
-            <?php echo form_upload('arquivo', 'Selecione um arquivo'); ?>
+            
+            <label><span>Escolher</span>
+                <?php echo form_radio('file_existente', '0', TRUE);?></label>
+            <label><span>Arquivo existente</span>
+                <?php echo form_radio('file_existente', '1', FALSE);?></label>
+
+            <div id="existe" style="display:none">
+            <?php echo form_dropdown('file_select', $arquivos,''); ?></div>
+            
+            <div id="escolhe">
+            <?php echo form_upload('arquivo', 'Selecione um arquivo'); ?></div>
+
             <?=$this->validation->arquivo_error; ?>
         </fieldset>
 
@@ -34,5 +52,7 @@
 
     </form>
  </div>
+
+
 <?php include ("footer.php");?>
 

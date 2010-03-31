@@ -47,31 +47,13 @@ class Produto extends Controller {
     }
 
     function novo () {
-        $data = array(
-            'logged'        =>$this->auth->logged(),
-            'page_title'    =>'Adicionar produto',
-            'titulo'        =>'ADICIONAR NOVO PRODUTO',
-            'description'   =>'Adicionar novo produto',
-            'action'        =>'produto/salvar',
-        );
+        $data = $this->_getDataNew();
         $this->load->view('admin-produto', $data);
     }
 
     function editar($id)
     {
-        $dados = $this->product->getProductById($id);
-        $data = array(
-            'logged'        =>$this->auth->logged(),
-            'page_title'    =>'Editar produto',
-            'titulo'        =>'EDITANDO O PRODUTO ' . $dados['nome'],
-            'description'   =>'Editar produto',
-            'action'        =>'produto/atualizar/'.$id,
-            'product'       =>$dados,
-        );
-        $this->validation->nome         = $dados['nome'];
-        $this->validation->preco        = $dados['preco'];
-        $this->validation->descricao    = $dados['descricao'];
-
+        $data = $this->_getDataEdit($id);
         $this->load->view('admin-produto', $data);
     }
 
@@ -123,15 +105,21 @@ class Produto extends Controller {
 
     function salvar()
     {
-        $data = array('logged'=>$this->auth->logged(),'page_title'=>'Adicionar produto', 'titulo'=>'ADICIONAR NOVO PRODUTO', 'description'=>'Adicionar novo produto');
-
+        $data = $this->_getDataNew();
+        $file_existente = (bool)$this->input->post('file_existente');
+        if($file_existente) $_POST['arquivo'] = $this->input->post('file_select');
+        
         //caso a validação esteja ok
         if ($this->validation->run()) {
             $data += array('image_data' => $this->enviaImagem());
-            $data += array('file_data'  => $this->enviaArquivo());
 
             $imagename = isset($data['image_data']['file_name'])?$data['image_data']['file_name']:'';
-            $filename = isset($data['file_data']['file_name'])?$data['file_data']['file_name']:'';
+            if(!$file_existente){
+                $data += array('file_data'  => $this->enviaArquivo());
+                $filename = isset($data['file_data']['file_name'])?$data['file_data']['file_name']:'';
+            }else{
+                $filename = $this->input->post('file_select');
+            }
 
             $dados = array (
                 'nome'          =>$this->input->post('nome'),
@@ -152,30 +140,41 @@ class Produto extends Controller {
             $this->messages->add($msg, 'done');
             redirect('produto/editar/'. $id); die();
         }
-        redirect('produto/novo'); die();
+        $this->load->view('admin-produto', $data);
+        //redirect('produto/novo'); die();
     }
 
     function atualizar($id=0)
     {
-        $data = array();
+        //echo "<pre>"; print_r($_POST); echo "</pre>"; die('fim');
+        $data = $data = $this->_getDataEdit($id);
         $dados = array();
-        
+
+        $file_existente = (bool)$this->input->post('file_existente');
+        if($file_existente) $_POST['arquivo'] = $this->input->post('file_select');
+
+
         if(!$id) {
             redirect('admin'); die();
         }
 
         $prod = $this->product->getProductById($id);
+
         if ($_FILES['userfile']['name'] AND !$_FILES['userfile']['error']) {
             deleteImage($prod['image']);
             $data += array('image_data' => $this->enviaImagem());
         }
-        if ($_FILES['arquivo']['name'] AND !$_FILES['arquivo']['error']) {
-            unlink(FCPATH . $this->config->item('upload_path') . 'arquivo/'. $prod['arquivo']);
-            $data += array('file_data'  => $this->enviaArquivo());
-        }
 
+        if(!$file_existente){
+            if ($_FILES['arquivo']['name'] AND !$_FILES['arquivo']['error']) {
+                unlink(FCPATH . $this->config->item('upload_path') . 'arquivo/'. $prod['arquivo']);
+                $data += array('file_data'  => $this->enviaArquivo());
+            }
+            $_POST['arquivo']  = $_FILES['arquivo']['name']  ? $_FILES['arquivo']['name']  : $prod['arquivo'];
+        }
+        
         $_POST['userfile'] = $_FILES['userfile']['name'] ? $_FILES['userfile']['name'] : $prod['image'];
-        $_POST['arquivo']  = $_FILES['arquivo']['name']  ? $_FILES['arquivo']['name']  : $prod['arquivo'];
+        
 
         //caso a validação esteja ok
         if ($this->validation->run()) {
@@ -192,24 +191,65 @@ class Produto extends Controller {
             if (!$this->product->updateProduct(array('id_produto'=>$id), $dados))
             {
                 $this->messages->add('Erro ao atualizar dados!', 'error');
-                redirect('admin', 'refresh'); die();
+                redirect('produto/editar/'.$id); die();
             }
-            $msg = sprintf('Produto %s foi atualizado com sucesso!', $dados['nome']);
+            $msg = sprintf('Produto <span>"%s"</span> foi atualizado com sucesso!', $dados['nome']);
             $this->messages->add($msg, 'done');
         }
-        redirect('produto/editar/'.$id); die();
+        $this->load->view('admin-produto', $data);
+        //redirect('produto/editar/'.$id); die();
     }
 
-    function _createThumbnail($fileName) {
+    function _createThumbnail($filename) {
         $config['image_library'] = 'gd2';
-        $config['source_image'] = $this->upload->get_upload_path() . $fileName;
+        $config['source_image'] = $this->upload->get_upload_path() . $filename;
         $config['create_thumb'] = TRUE;
-        $config['maintain_ratio'] = TRUE;
-        $config['width'] = 120;
-        $config['height'] = 90;
-
+        $config['maintain_ratio'] = FALSE;
+        $config['width'] = 100;
+        $config['height'] = 100;
         $this->load->library('image_lib', $config);
         if(!$this->image_lib->resize()) echo $this->image_lib->display_errors();
+    }
+
+    function _getDataNew()
+    {
+        $data = array(
+            'logged'        =>$this->auth->logged(),
+            'page_title'    =>'Adicionar produto',
+            'titulo'        =>'ADICIONAR NOVO PRODUTO',
+            'description'   =>'Adicionar novo produto',
+            'action'        =>'produto/salvar',
+            'arquivos'      =>$this->_listaArquivos(),
+        );
+        return $data;
+    }
+
+    function _getDataEdit($id)
+    {
+        $dados = $this->product->getProductById($id);
+        $data = array(
+            'logged'        =>$this->auth->logged(),
+            'page_title'    =>'Editar produto',
+            'titulo'        =>'EDITANDO O PRODUTO ' . $dados['nome'],
+            'description'   =>'Editar produto',
+            'action'        =>'produto/atualizar/'.$id,
+            'product'       =>$dados,
+            'arquivos'      =>$this->_listaArquivos(),
+        );
+        $this->validation->nome         = $dados['nome'];
+        $this->validation->preco        = $dados['preco'];
+        $this->validation->descricao    = $dados['descricao'];
+        return $data;
+    }
+
+    function _listaArquivos()
+    {
+        $arquivos = getFilesByPath(uploadPath().'arquivo');
+        $arrFile = array(''=>'Selecione...');
+        foreach ($arquivos as $item) {
+            $arrFile[$item]=$item;
+        }
+        return $arrFile;
     }
 
 }

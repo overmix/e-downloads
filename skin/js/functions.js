@@ -1,4 +1,14 @@
 $(function(){
+    $('[name=file_existente]').click(function(){
+        if (eval($(this).val())) {
+            $('#existe').show();
+            $('#escolhe').hide();
+        }else{
+            $('#existe').hide();
+            $('#escolhe').show();
+        }
+    });
+
     $('#form_obj1').submit(function(){
         if(!$('#imagens-1').find('input[class=imgitem]').is(":checked"))
         {
@@ -154,6 +164,7 @@ $(function(){
     });
     */
 });
+
 
 /**
 * Refaz o rating e desabilita caso necessário

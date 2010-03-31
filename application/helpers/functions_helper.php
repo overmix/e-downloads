@@ -1,5 +1,23 @@
 <?php
 /**
+ * retorna o caminho absoluto da pasta de uploads
+ * @return string
+ */
+function uploadPath() {
+    $ci =& get_instance();
+    return FCPATH . $ci->config->item('upload_path');
+}
+
+/**
+ * retorna o caminho absoluto da pasta de uploads
+ * @return string
+ */
+function uploadUrl() {
+    $ci =& get_instance();
+    return base_url() . $ci->config->item('upload_path');
+}
+
+/**
  *
  * Retorna true caso exista algum valor na sessão email
  * @return boolean
@@ -37,6 +55,7 @@ function getLastUri($default='home')
     setLastUri('');
     return $segment;
 }
+
 /**
  * retorna a url absoluta da miniatura de uma imagem ou vídeo gravado pelo usuário
  * @param int $id
@@ -47,8 +66,21 @@ function getThumbUrlById($id) {
     if(!$id) return;
     $product = getProductById($id);
     $thumb = imgToThumb($product['image']);
-    return base_url() . $ci->config->item('upload_path') . "image/" . $thumb;
+    return uploadUrl() . "image/" . $thumb;
 }
+
+/**
+ * retorna o caminho absoluto da miniatura de uma imagem gravada pelo usuário
+ * @param int $id
+ * @return string
+ */
+function getThumbPathById($id) {
+    if(!$id) return;
+    $media = getProductById($id);
+    $thumb = imgToThumb($media['media_url']);
+    return uploadPath() . "image/" . $thumb;
+}
+
 
 /**
 * seleciona o nome da imagem/url do vídeo no banco de dados
@@ -67,8 +99,14 @@ function getProductById($id) {
  * @return string
  */
 function imgToThumb($filename) {
+    $ci =& get_instance();
+    $arr_file = explode('.', $filename);
+    $ext = array_pop($arr_file);
+    return implode('.',$arr_file) . $ci->config->item('prefix_thumb') . '.' . $ext;
+    /*
     $ext = getExtension($filename);
     return str_replace($ext, '', $filename) . "_thumb" . $ext;
+    */
 }
 
 /**
@@ -153,18 +191,6 @@ function is_date($date)
 	return checkdate($Month,$Day,$Year);
 }
 
-function thumb_name($file)
-{
-    $ci =& get_instance();
-    $arr = explode('.', $file);
-    $ext = array_pop($arr);
-    $file = array();
-    foreach ($arr as $item) {
-        $file[] = $item;
-    }
-    return implode('.',$file) . $ci->config->item('prefix_thumb') . '.' . $ext;
-}
-
 function deleteImage($filename)
 {
     $ci =& get_instance();
@@ -173,7 +199,7 @@ function deleteImage($filename)
     if (file_exists($file)) {
         unlink($file);
     }
-    $file = $image_path . thumb_name($filename);
+    $file = $image_path . imgToThumb($filename);
     if (file_exists($file)) {
         unlink($file);
     }
@@ -250,6 +276,24 @@ function loadTemplate ($file, $dados)
     return $template;
 }
 
+/**
+ * Lista todos os arquivos em uma pasta passada em $path
+ * @param string $path Caminho completo dos arquivos que serão listados
+ */
+function getFilesByPath($path='')
+{
+    if (!is_dir($path)) return array();
+    $iterator = new DirectoryIterator($path);
+    
+    $files = array();
+    foreach ( $iterator as $entry ) {
+        if (!$entry->isFile()) continue;
+        $files[] = $entry->getFilename();
+    }
+    return $files;
+}
+
+
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/
@@ -291,18 +335,6 @@ function getMediaPathById($id) {
 }
 
 /**
- * retorna o caminho absoluto da miniatura de uma imagem gravada pelo usuário
- * @param int $id
- * @return string
- */
-function getThumbPathById($id) {
-    if(!$id) return;
-    $media = getProductById($id);
-    $thumb = imgToThumb($media['media_url']);
-    return uploadPath().$media['media_category']."/".$media['id_usuario']."/".$thumb;
-}
-
-/**
  * convert uma url de vídeo do youtube em url da miniatura da imagem do vídeo no youtube
  * @param string $hRef
  * @return string
@@ -333,15 +365,6 @@ function getMediaById($id) {
  */
 function base_path() {
     return dirname(dirname(__FILE__));
-}
-
-/**
- * retorna o caminho absoluto da pasta de uploads
- * @return string
- */
-function uploadPath() {
-    $ci =& get_instance();
-    return dirname(dirname(dirname(__file__))) . "/" . $ci->config->item('upload_path');
 }
 
 function geraCodeConfirm($dados) {
@@ -453,20 +476,6 @@ function clearArr($arr)
         if($item)$new_arr[] = $item;
     }
     return $new_arr;
-}
-
-/**
- * Lista todos os arquivos em uma pasta passada em $path
- * @param string $path Caminho completo dos arquivos que serão listados
- */
-function getFilesByPath($path='')
-{
-    $iterator = new DirectoryIterator($path);
-    $files = array();
-    foreach ( $iterator as $entry ) {
-        $files[] = $entry->getFilename();
-    }
-    return $files;
 }
 
 function getAllMedia()
