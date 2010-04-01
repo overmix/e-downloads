@@ -19,8 +19,11 @@ function uploadUrl() {
 
 /**
  *
- * Retorna true caso exista algum valor na sessão email
- * @return boolean
+ * Retorna true caso exista algum valor na sessão email e $dados seja = FALSE, ou
+ * retorna a sesão completa do usuário logado quando $dados = TRUE
+ * @param boolean $dados Define se o retorno será booleano ou um objeto com os dados
+ * da sesão do usuário logado
+ * @return misc
  */
 function logged ($dados=FALSE) {
     $ci =& get_instance();
@@ -31,6 +34,7 @@ function logged ($dados=FALSE) {
         return (bool)(isset($ci->session->userdata['email']) AND $ci->session->userdata['email']);
     }
 }
+
 /**
  *
  * @param String $media = nome do arquivo dentro da url uploads

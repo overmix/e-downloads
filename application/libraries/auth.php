@@ -15,11 +15,21 @@ class Auth {
 
     /**
      *
-     * Retorna true caso exista algum valor na sessão email
-     * @return boolean
+     * Retorna true caso exista algum valor na sessão email e $dados seja = FALSE, ou
+     * retorna a sesão completa do usuário logado quando $dados = TRUE
+     * @param boolean $dados Define se o retorno será booleano ou um objeto com os dados
+     * da sesão do usuário logado
+     * @return misc
      */
-    function logged () {
-        return (bool)(isset($this->ci->session->userdata['email']) AND $this->ci->session->userdata['email']);
+    function logged ($dados=FALSE) {
+        $ci =& get_instance();
+        if ($dados) {
+            if( (bool)(isset($ci->session->userdata['email']) AND $ci->session->userdata['email']) )
+                return (object)$ci->session->userdata;
+
+        }else{
+            return (bool)(isset($ci->session->userdata['email']) AND $ci->session->userdata['email']);
+        }
     }
 
     /**
@@ -50,6 +60,7 @@ class Auth {
     function sair ()
     {
         $this->ci->session->unset_userdata('email');
+        $this->ci->session->unset_userdata('nome');
         $this->ci->session->sess_destroy();
     }
 
