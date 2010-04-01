@@ -10,7 +10,6 @@
         <h2><?=$product['nome'];?></h2>
             <a href="<?php echo base_url() . 'produto/index/' . $product['id_produto'];?>" rel="prettyPhoto[galeria]">
                 <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="foto 1" title="<?=$product['nome']?>" /></a>
-           
             <p><?=$product['preco']?></p>
             <p><?=getDescription($product['id_produto'], 40)?></p>
             <p><?php echo anchor('produto/index/' . $product['id_produto'], 'detalhes', array('title'=>'Lista de downloads'));?></p>
