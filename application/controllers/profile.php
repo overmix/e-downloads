@@ -100,7 +100,11 @@ class Profile extends Controller {
 
             if($this->input->post('senha2')) $dados += array('senha'=>md5($this->input->post('senha2')));
 
-            $this->user->updateUser($dados);
+            $r = $this->user->updateUser($dados);
+
+            if ($r) {
+                $this->session->set_userdata('nome', $dados['nome']);;
+            }
             
             $this->messages->add('Usuário atualizado com sucesso!', 'success'); // ser user message
             redirect('profile'); die();
