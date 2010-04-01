@@ -51,7 +51,7 @@ class Cadastro extends Controller {
 
             if ($this->user->insertUser($dados)) {
                 $this->session->set_userdata('email', $dados['email']);
-                redirect('profile', 'refresh'); die();
+                redirect('home'); die();
             }
             $this->messages->add('Erro ao gravar dados!');
         }
