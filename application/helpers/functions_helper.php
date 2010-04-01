@@ -22,9 +22,14 @@ function uploadUrl() {
  * Retorna true caso exista algum valor na sessão email
  * @return boolean
  */
-function logged () {
+function logged ($dados=FALSE) {
     $ci =& get_instance();
-    return (bool)(isset($ci->session->userdata['email']) AND $ci->session->userdata['email']);
+    if ($dados) {
+        if( (bool)(isset($ci->session->userdata['email']) AND $ci->session->userdata['email']) )
+            return (object)$ci->session->userdata;
+    }else{
+        return (bool)(isset($ci->session->userdata['email']) AND $ci->session->userdata['email']);
+    }
 }
 /**
  *
