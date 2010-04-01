@@ -20,6 +20,11 @@
         </script>
     </head>
     <body>
+        <?php if(logged()):?>
+            <ul>
+                <li>Olá <?php echo anchor('profile', logged(TRUE)->nome, array('title'=>'Editar dados do perfil')) ?>, seja bem-vindo!</li>
+            </ul>
+        <?php endif;?>
         <ul>
             <li><?php echo anchor('home', 'Home', array('title'=>'Home'));?></li>
             <?php if(logged()):?>
@@ -30,5 +35,4 @@
 			<?php endif;?>
             <li><?php echo anchor('inicio', 'Login', array('title'=>'Login')); ?></li>
             <li><?php echo anchor('inicio/sair', 'Sair', array('title'=>'Sair do sistema'));?></li>
-
         </ul>
