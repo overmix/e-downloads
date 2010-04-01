@@ -29,7 +29,7 @@
                     <td><a href="<?php echo base_url();?>usuario/index/<?php echo $pedido['id_usuario'];?>" title="Email: <?php echo $pedido['email'];?> - Telefone: <?php echo $pedido['telefone'];?>"><?php echo $pedido['nome'];?></a></td>
                     <td style='text-align: center'><?=formataData("d/m/Y H:i",$pedido['pedido_em']); ?></td>
                     <td style='text-align: center'><?=is_date($pedido['liberado_em']) ? formataData('d/m/Y H:i', $pedido['liberado_em']) : '-' ;?></td>
-                    <td style='text-align: center'><?=is_date($pedido['usar_ate']) ? $pedido['usar_ate'] : '-' ;?></td>
+                    <td style='text-align: center'><?=is_date($pedido['usar_ate']) ? formataData("d/m/Y", $pedido['usar_ate']) : 'Ilimitado' ;?></td>
                     <td><?php echo $pedido['downloads'];?></td>
                     <td><?php echo $pedido['limite'];?></td>
                     <td><a href="<?php echo base_url();?>admin/liberarpedido/<?=$pedido['id_pedido'];?>" class="liberar">Liberar</a></td>
@@ -98,7 +98,7 @@
                     <td style='text-align: center'><?=formataData("d/m/Y H:i",$product['atualizado']); ?></td>
                     <td><?=$product['descricao'] ?></td>
                     <td><a href="<?php echo base_url();?>produto/editar/<?php echo $product['id_produto'];?>">Editar</a></td>
-                    <td><a href="admin/reativarproduto/<?=$product['id_produto'];?>" class="reativar">Re-ativar</a></td>
+                    <td><a href="admin/reativarproduto/<?=$product['id_produto'];?>" class="reativar">Ativar</a></td>
                     <td><a href="admin/removerproduto/<?=$product['id_produto'];?>" class="remover">Remover</a></td>
                 </tr>
                 <?php endforeach; ?>
