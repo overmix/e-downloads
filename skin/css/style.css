@@ -15,3 +15,12 @@ root {
     display: block;
 }
 
+label{
+    display:block;
+}
+
+label span {
+    font: 12px times new roman, verdana, arial, tahoma, sans-serif;
+    color:gray;
+    font-style:italic;
+}
