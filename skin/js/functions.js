@@ -16,7 +16,7 @@ $(function(){
             return false;
         }
     });
-
+/*
     $('#chkallrecents').change(function() {
         $('.listimg1').find('input[type=checkbox]').each(function(e){
             $(this).attr('checked', $('#chkallrecents').is(':checked'));
@@ -24,12 +24,12 @@ $(function(){
     })
     $('.imgitem').change(function() {
         var todosMarcados = true;
-        $('#imagens-1').find('input[class=imgitem]').each(function(e){
+        $('#painel-1').find('input[class=imgitem]').each(function(e){
             if(!$(this).is(':checked')) todosMarcados = false
         })
         $('#chkallrecents').attr('checked',todosMarcados);
     })
-
+*/
     // ------------------------------------------------------------------
     $('#form_obj2').submit(function(){
         if(!$('#lembrates-1').find('input[class=emailitem]').is(":checked"))
@@ -39,26 +39,7 @@ $(function(){
         }
     });
 
-    $('#chkallemails').change(function() {
-        $('.listemail').find('input[type=checkbox]').each(function(e){
-            $(this).attr('checked', $('#chkallemails').is(':checked'));
-        })
-    })
-
-    $('.emailitem').change(function() {
-        var todosMarcados = true;
-        $('#lembrates-1').find('input[class=emailitem]').each(function(e){
-            if(!$(this).is(':checked')) todosMarcados = false
-        })
-        $('#chkallemails').attr('checked',todosMarcados);
-    })
     // ------------------------------------------------------------------
-
-    $('#chkallaproved').change(function() {
-        $('.listimg2').find('input[type=checkbox]').each(function(e){
-            $(this).attr('checked', $('#chkallaproved').is(':checked'));
-        })
-    })
 
     $('#upload_enviar').click(function(){
         $('#enviando').show();
@@ -237,3 +218,38 @@ $(document).ready(function(){
 	});
 });
 */
+
+/*
+    $('#chkallrecents').change(function() {
+        $('.listimg1').find('input[type=checkbox]').each(function(e){
+            $(this).attr('checked', $('#chkallrecents').is(':checked'));
+        })
+    })
+    $('.imgitem').change(function() {
+        var todosMarcados = true;
+        $('#painel-1').find('input[class=imgitem]').each(function(e){
+            if(!$(this).is(':checked')) todosMarcados = false
+        })
+        $('#chkallrecents').attr('checked',todosMarcados);
+    })
+*/
+/**
+ * checarTodos
+ */
+function checarTodos(obj, item) {
+    $(item).find('input[type=checkbox]').each(function(e){
+        $(this).attr('checked', $(obj).is(':checked'));
+    })
+}
+
+/**
+ * checarItem
+ */
+function checarItem(obj, target1, target2) {
+    var todosMarcados = true;
+    $(target1).find('input[class='+obj+']').each(function(e){
+        if(!$(this).is(':checked')) todosMarcados = false
+    })
+    $(target2).attr('checked',todosMarcados);
+
+}

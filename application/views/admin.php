@@ -16,7 +16,8 @@
         <table>
             <thead>
                 <tr>
-                    <th><input type="checkbox" name="chkallrecents" id="chkallrecents" /></th>
+                    <th><input type="checkbox" name="chkallrecents" id="chkallpedidos"
+                               onchange="checarTodos(this, '.listimg1')" /></th>
                     <th>N° Pedido</th><th>Usuário</th><th>Pedido em</th><th>Liberado em</th>
                     <th>Usar até</th><th>Baixados</th><th>Limite</th><th colspan="2">Ações</th>
                 </tr>
@@ -24,7 +25,8 @@
             <tbody>
                 <?php foreach($pedidos as $pedido): ?>
                 <tr class="listimg1">
-                    <td><input type="checkbox" name="edit[]" class="imgitem" value="<?=$pedido['id_pedido'];?>" /></td>
+                    <td><input type="checkbox" name="edit[]" class="chkpedidos" value="<?=$pedido['id_pedido'];?>"
+                               onchange="checarItem('chkpedidos','#painel-1','#chkallpedidos')" /></td>
                     <td><a href="<?php echo base_url();?>pedido/index/<?php echo $pedido['id_pedido'];?>" title="Visualizar pedido"><?php echo $pedido['id_pedido'];?></a></td>
                     <td><a href="<?php echo base_url();?>usuario/index/<?php echo $pedido['id_usuario'];?>" title="Email: <?php echo $pedido['email'];?> - Telefone: <?php echo $pedido['telefone'];?>"><?php echo $pedido['nome'];?></a></td>
                     <td style='text-align: center'><?=formataData("d/m/Y H:i",$pedido['pedido_em']); ?></td>
@@ -48,14 +50,16 @@
         <table>
             <thead>
                 <tr>
-                    <th><input type="checkbox" name="chkallrecents" id="chkallrecents" /></th><th>Imagem</th><th>Título</th>
+                    <th><input type="checkbox" name="chkallrecents" id="chkallapproved"
+                               onchange="checarTodos(this, '.lista2')" /></th><th>Imagem</th><th>Título</th>
                     <th>Atualizado em</th><th>Descrição</th><th colspan="3">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach($produtos_ativos as $product): ?>
-                <tr class="listimg1">
-                    <td><input type="checkbox" name="edit[]" class="imgitem" value="<?=$product['id_produto'];?>" /></td>
+                <tr class="lista2">
+                    <td><input type="checkbox" name="edit[]" class="chkapproved" value="<?=$product['id_produto'];?>"
+                               onchange="checarItem('chkapproved','#painel-2','#chkallapproved')" /></td>
                     <td>
                         <a href="<?php echo base_url();?>produto/editar/<?php echo $product['id_produto'];?>">
                             <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="<?=$product['image'];?>" />
@@ -81,14 +85,16 @@
         <table>
             <thead>
                 <tr>
-                    <th><input type="checkbox" name="chkallrecents" id="chkallrecents" /></th><th>Imagem</th><th>Título</th>
+                    <th><input type="checkbox" name="chkallrecents" id="chkalldisabled"
+                               onchange="checarTodos(this, '.lista3')" /></th><th>Imagem</th><th>Título</th>
                     <th>Atualizado em</th><th>Descrição</th><th colspan="3">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach($produtos_inativos as $product): ?>
-                <tr class="listimg1">
-                    <td><input type="checkbox" name="edit[]" class="imgitem" value="<?=$product['id_produto'];?>" /></td>
+                <tr class="lista3">
+                    <td><input type="checkbox" name="edit[]" class="chkdisabled" value="<?=$product['id_produto'];?>"
+                               onchange="checarItem('chkdisabled','#painel-3','#chkalldisabled')" /></td>
                     <td>
                         <a href="<?php echo base_url();?>produto/editar/<?php echo $product['id_produto'];?>">
                             <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="<?=$product['image'];?>" />
