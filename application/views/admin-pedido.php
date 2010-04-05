@@ -17,24 +17,24 @@
 
         <input type="hidden" name="id_pedido" value="<?php echo $pedido['id_pedido'];?>" />
             <ul>
-                <li><span>Pedido em:</span>
+                <li>Pedido em:
                     <strong class="txt"><?=$this->validation->pedido_em;?></strong></li>
-                <li><span>Liberado em:</span>
+                <li>Liberado em:
                     <strong class="txt"><?=$this->validation->liberado_em;?></strong>
 					<?php if(!is_date($this->validation->liberado_em)): ?>
 					<a href="<?php echo base_url();?>admin/liberarpedido/<?php echo $pedido['id_pedido'];?>" title=" ">Liberar agora</a>
 					<?php endif ;?>
 					</li>
-                <li><span>Downloads efetuados:</span>
+                <li>Downloads efetuados:
                     <strong class="txt"><?=$this->validation->downloads;?></strong></li>
                 <li>
-                    <span>Usar até:</span>
+                    Usar até:
                     <strong class="obj" style="display:none"><input type="text" name="usar_ate" value="<?=$this->validation->usar_ate;?>" /></strong>
                     <strong class="txt"><?=$this->validation->usar_ate;?></strong>
                     <a href="#" title=" " class="edit">editar</a><?=$this->validation->usar_ate_error; ?>
                 </li>
                 <li>
-                    <span>Limite de downloads:</span>
+                    Limite de downloads:
                     <strong class="obj" style="display:none"><input type="text" name="limite" value="<?=$this->validation->limite;?>" /></strong>
                     <strong class="txt"><?=$this->validation->limite;?></strong>
                     <a href="#" title=" " class="edit">editar</a><?=$this->validation->limite_error; ?>
