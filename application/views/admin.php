@@ -11,7 +11,7 @@
         
     </ul>
     <div id="painel-1" class="gallery">
-        <?=form_open("admin/liberar", array('id' => 'form_obj1'));?>
+        <?=form_open("admin/liberarpedido", array('id' => 'form_obj1'));?>
         <input type="submit" id="aprovartodos" value="Liberar todos os selecionados" />
         <table>
             <thead>
