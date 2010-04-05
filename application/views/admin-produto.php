@@ -14,33 +14,35 @@
     <?=form_open_multipart($action);?>
         <fieldset>
             <legend><?php echo $page_title;?></legend>
+            
             <?php if(isset($product)){?>
-            <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="foto 1" title="<?=$product['nome']?>" />
+                <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="foto 1" title="<?=$product['nome']?>" />
             <?php };?>
-            <?php echo form_upload('userfile', 'Selecione uma imagem'); ?>
+
+            <label>Escolher imagem
+            <?php echo form_upload('userfile', 'Selecione uma imagem'); ?></label>
             <?=$this->validation->userfile_error; ?>
 
-            <label><span>Nome do produto</span><input type="text" value="<?=$this->validation->nome;?>" name="nome" />
+            <label>Nome do produto <input type="text" value="<?=$this->validation->nome;?>" name="nome" />
             <?=$this->validation->nome_error; ?></label>
 
-            <label><span>Preço</span><input type="text" value="<?=$this->validation->preco;?>" name="preco" />
+            <label>Preço <input type="text" value="<?=$this->validation->preco;?>" name="preco" />
             <?=$this->validation->preco_error; ?></label>
 
-            <label><span>Descrição</span>
-                <textarea rows="4" cols="36" name="descricao"><?=$this->validation->descricao;?></textarea>
-                <?=$this->validation->descricao_error; ?></label>
+            <label>Descrição <textarea rows="4" cols="36" name="descricao"><?=$this->validation->descricao;?></textarea>
+            <?=$this->validation->descricao_error; ?></label>
 
-            
-            <label><span>Escolher</span>
-                <?php echo form_radio('file_existente', '0', TRUE);?></label>
-            <label><span>Arquivo existente</span>
-                <?php echo form_radio('file_existente', '1', FALSE);?></label>
+            <label>Escolher <?php echo form_radio('file_existente', '0', TRUE);?></label>
+                
+            <label>Arquivo existente <?php echo form_radio('file_existente', '1', FALSE);?></label>
 
             <div id="existe" style="display:none">
-            <?php echo form_dropdown('file_select', $arquivos,''); ?></div>
+            <?php echo form_dropdown('file_select', $arquivos,''); ?>
+            </div>
             
             <div id="escolhe">
-            <?php echo form_upload('arquivo', 'Selecione um arquivo'); ?></div>
+            <?php echo form_upload('arquivo', 'Selecione um arquivo'); ?>
+            </div>
 
             <?=$this->validation->arquivo_error; ?>
         </fieldset>

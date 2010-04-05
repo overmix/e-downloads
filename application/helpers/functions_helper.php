@@ -301,7 +301,41 @@ function getFilesByPath($path='')
     }
     return $files;
 }
+/**
+ * Simplifica uma string, retirando espaços ou trocando por anderline, também
+ * retira os acentos desta palavra.
+ * @param string $string Texto a ser simplificado
+ * @param bool $spaces True para deixar os espaços, False para retira-los ou
+ * uma string para substituir os espaços.
+ * @param int $alter 0 para manter a string como está, 1 para converter em
+ * uppercase e -1 para converter em lowercase.
+ * @return string Retorna a string tratada.
+ */
+function simplificaString ($string='',$spaces=false, $alter=0) {
+    $return = retiraAcentos($string);
+    if ($spaces !== false) {
+        $return = str_replace (' ', ($spaces===true?'':$spaces) , $return);
+    }
+    switch ($alter) {
+        case 1:  $return = mb_strtoupper($return);
+        case -1: $return = mb_strtolower($return);
+    }
+    return $return;
+}
 
+/**
+ * Retira todos os acentos de uma palavra
+ * @param string $palavra Palavra a ser tratada
+ * @return string Palavra com os acentos retirados
+ */
+function retiraAcentos($palavra){
+    $new_palavra = strtr(
+        utf8_decode($palavra),
+        utf8_decode("áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ"),
+        "aaaaeeiooouucAAAAEEIOOOUUC"
+    );
+    return $new_palavra;
+}
 
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------------------------------------*/

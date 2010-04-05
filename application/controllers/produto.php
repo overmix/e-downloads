@@ -67,6 +67,11 @@ class Produto extends Controller {
         
         verifyPath($upload_path);
 
+        // Define o nome simplificado da imagem
+        if (isset($_FILES['userfile']['name'])) {
+            $_FILES['userfile']['name'] = simplificaString($_FILES['userfile']['name'], '_') ;
+        }
+
         if (!$this->upload->do_upload()) {
             $this->messages->add($this->upload->display_errors('',''));
             return array();
@@ -107,8 +112,9 @@ class Produto extends Controller {
     {
         $data = $this->_getDataNew();
         $file_existente = (bool)$this->input->post('file_existente');
+
         if($file_existente) $_POST['arquivo'] = $this->input->post('file_select');
-        
+
         //caso a validação esteja ok
         if ($this->validation->run()) {
             $data += array('image_data' => $this->enviaImagem());
@@ -152,7 +158,6 @@ class Produto extends Controller {
 
         $file_existente = (bool)$this->input->post('file_existente');
         if($file_existente) $_POST['arquivo'] = $this->input->post('file_select');
-
 
         if(!$id) {
             redirect('admin'); die();
@@ -227,6 +232,7 @@ class Produto extends Controller {
     function _getDataEdit($id)
     {
         $dados = $this->product->getProductById($id);
+
         $data = array(
             'logged'        =>$this->auth->logged(),
             'page_title'    =>'Editar produto',
