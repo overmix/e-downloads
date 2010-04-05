@@ -202,13 +202,20 @@ function is_date($date)
 
 function deleteImage($filename)
 {
-    $ci =& get_instance();
-    $image_path = FCPATH . $ci->config->item('upload_path') . 'image/';
+    $image_path = uploadPath() . 'image/';
     $file = $image_path . $filename;
     if (file_exists($file)) {
         unlink($file);
     }
     $file = $image_path . imgToThumb($filename);
+    if (file_exists($file)) {
+        unlink($file);
+    }
+}
+
+function deleteArquivo($filename){
+    $file_path = uploadPath() . 'arquivo/';
+    $file    = $file_path . $filename;
     if (file_exists($file)) {
         unlink($file);
     }

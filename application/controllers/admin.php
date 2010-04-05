@@ -232,12 +232,16 @@ class Admin extends Controller {
     function removerproduto ($id)
     {
         $produto = $this->product->getProductById($id);
+
         if($produto['id_produto'])
         {
             $this->db->where(array('id_produto'=>$id));
             $this->db->delete('produtos');
             $this->messages->add("O produto {$produto['nome']} foi deletado com sucesso.", 'done');
         }
+
+        deleteArquivo($produto['arquivo']);
+
         redirect('admin'); die();
     }
 

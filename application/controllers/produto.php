@@ -157,7 +157,7 @@ class Produto extends Controller {
 
     function atualizar($id=0)
     {
-        $data = $data = $this->_getDataEdit($id);
+        $data = array();
         $dados = array();
 
         $file_existente = (bool)$this->input->post('file_existente');
@@ -176,22 +176,21 @@ class Produto extends Controller {
 
         if(!$file_existente){
             if ($_FILES['arquivo']['name'] AND !$_FILES['arquivo']['error']) {
-                $filepath = uploadPath() . 'arquivo/';
-                $arquivo    = $filepath . $prod['arquivo'];
-                if (file_exists($arquivo)) {
-                    rename($arquivo, $arquivo .  '.tmp');
-                }
                 $data += array('file_data' => $this->enviaArquivo());
-                if (count($data['file_data']))  
-                    unlink($arquivo . '.tmp');
-                else
-                    rename($arquivo .  '.tmp', $arquivo);
+                $_POST['arquivo']  = $data['file_data']['file_name'] ? 
+                    $data['file_data']['file_name']  :
+                    $prod['arquivo'];
+            }else{
+                $_POST['arquivo']  = $_FILES['arquivo']['name'] ? 
+                    $_FILES['arquivo']['name'] :
+                    $prod['arquivo'];
             }
-            $_POST['arquivo']  = $_FILES['arquivo']['name']  ? $_FILES['arquivo']['name']  : $prod['arquivo'];
         }
         
         $_POST['userfile'] = $_FILES['userfile']['name'] ? $_FILES['userfile']['name'] : $prod['image'];
 
+        $data += $this->_getDataEdit($id);
+        
         //caso a validação esteja ok
         if ($this->validation->run()) {
             $dados += array (
