@@ -558,6 +558,7 @@ class CI_Upload {
 		}
 
 		$image_types = array('gif', 'jpg', 'jpeg', 'png', 'jpe');
+
 		foreach ($this->allowed_types as $val)
 		{
 			$mime = $this->mimes_types(strtolower($val));

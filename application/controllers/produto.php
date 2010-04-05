@@ -97,6 +97,11 @@ class Produto extends Controller {
         
         verifyPath($upload_path);
 
+        // Define o nome simplificado do arquivo
+        if (isset($_FILES['arquivo']['name'])) {
+            $_FILES['arquivo']['name'] = simplificaString($_FILES['arquivo']['name'], '_') ;
+        }
+
         if (!$this->upload->do_upload('arquivo')) {
             $this->messages->add($this->upload->display_errors('',''));
             return array();
@@ -152,7 +157,6 @@ class Produto extends Controller {
 
     function atualizar($id=0)
     {
-        //echo "<pre>"; print_r($_POST); echo "</pre>"; die('fim');
         $data = $data = $this->_getDataEdit($id);
         $dados = array();
 
@@ -172,17 +176,18 @@ class Produto extends Controller {
 
         if(!$file_existente){
             if ($_FILES['arquivo']['name'] AND !$_FILES['arquivo']['error']) {
-                $arquivo = FCPATH . $this->config->item('upload_path') . 'arquivo/'. $prod['arquivo'];
+                $filepath = uploadPath() . 'arquivo/';
+                $arquivo    = $filepath . $prod['arquivo'];
                 if (file_exists($arquivo)) {
-                    unlink($arquivo);
+                    rename($arquivo, $arquivo .  '.tmp');
                 }
-                $data += array('file_data'  => $this->enviaArquivo());
+                $data += array('file_data' => $this->enviaArquivo());
+                if (count($data['file_data']))  unlink($arquivo . '.tmp');
             }
             $_POST['arquivo']  = $_FILES['arquivo']['name']  ? $_FILES['arquivo']['name']  : $prod['arquivo'];
         }
         
         $_POST['userfile'] = $_FILES['userfile']['name'] ? $_FILES['userfile']['name'] : $prod['image'];
-        
 
         //caso a validação esteja ok
         if ($this->validation->run()) {
@@ -196,10 +201,9 @@ class Produto extends Controller {
 
             $dados = $this->input->xss_clean($dados);
 
-            if (!$this->product->updateProduct(array('id_produto'=>$id), $dados))
+            if ($id)
             {
-                $this->messages->add('Erro ao atualizar dados!', 'error');
-                redirect('produto/editar/'.$id); die();
+                $this->product->updateProduct(array('id_produto'=>$id), $dados);
             }
             $msg = sprintf('Produto <span>"%s"</span> foi atualizado com sucesso!', $dados['nome']);
             $this->messages->add($msg, 'done');

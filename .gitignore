@@ -5,6 +5,8 @@
 config.php
 code/.htaccess
 nbproject/*
+uploads/arquivo/*
+uploads/image/*
 .settings/*
 .buildpath
 .project
