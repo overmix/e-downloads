@@ -17,14 +17,14 @@
             <thead>
                 <tr>
                     <th><input type="checkbox" name="chkallrecents" id="chkallpedidos"
-                               onchange="checarTodos(this, '.listimg1')" /></th>
+                               onchange="checarTodos(this, '.lista1')" /></th>
                     <th>N° Pedido</th><th>Usuário</th><th>Pedido em</th><th>Liberado em</th>
                     <th>Usar até</th><th>Baixados</th><th>Limite</th><th colspan="2">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach($pedidos as $pedido): ?>
-                <tr class="listimg1">
+                <tr class="lista1">
                     <td><input type="checkbox" name="edit[]" class="chkpedidos" value="<?=$pedido['id_pedido'];?>"
                                onchange="checarItem('chkpedidos','#painel-1','#chkallpedidos')" /></td>
                     <td><a href="<?php echo base_url();?>pedido/index/<?php echo $pedido['id_pedido'];?>" title="Visualizar pedido"><?php echo $pedido['id_pedido'];?></a></td>
@@ -40,11 +40,12 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <input type="submit" value="Aprovar todos os selecionados" />
+        <input type="submit" id="aprovartodos" value="Liberar todos os selecionados" />
         </form>
     </div>
+
     <div id="painel-2" class="gallery">
-        <?=form_open("admin/desativarproduto", array('id' => 'form_obj1'));?>
+        <?=form_open("admin/desativarproduto", array('id' => 'form_obj2'));?>
         <input type="submit" id="aprovartodos" value="Desativar todos os selecionados" />
         <?php echo anchor('produto/novo', 'Adicionar novo produto', array('title'=> 'Adicionar novo produto'));?>
         <table>
@@ -75,12 +76,13 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <input type="submit" value="Aprovar todos os selecionados" />
+        <input type="submit" id="aprovartodos" value="Desativar todos os selecionados" />
         <?php echo anchor('produto/novo', 'Adicionar novo produto', array('title'=> 'Adicionar novo produto'));?>
         </form>
     </div>
+
     <div id="painel-3" class="gallery">
-        <?=form_open("admin/reativarproduto", array('id' => 'form_obj1'));?>
+        <?=form_open("admin/reativarproduto", array('id' => 'form_obj3'));?>
         <input type="submit" id="aprovartodos" value="Re-ativar todos os selecionados" />
         <table>
             <thead>
@@ -110,9 +112,10 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <input type="submit" value="Aprovar todos os selecionados" />
+        <input type="submit" id="aprovartodos" value="Re-ativar todos os selecionados" />
         </form>
     </div>
+
     <div id="painel-4" class="gallery">
         <table>
             <thead>

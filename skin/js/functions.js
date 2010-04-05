@@ -10,9 +10,23 @@ $(function(){
     });
 
     $('#form_obj1').submit(function(){
-        if(!$('#imagens-1').find('input[class=imgitem]').is(":checked"))
+        if(!$('#painel-1').find('input[class=chkpedidos]').is(":checked"))
         {
-            alert("Selecione pelo menos uma imagem/vídeo para aprovar.");
+            alert("Selecione pelo menos um pedido para liberar.");
+            return false;
+        }
+    });
+    $('#form_obj2').submit(function(){
+        if(!$('#painel-2').find('input[class=chkapproved]').is(":checked"))
+        {
+            alert("Selecione pelo menos um produto para desativar.");
+            return false;
+        }
+    });
+    $('#form_obj3').submit(function(){
+        if(!$('#painel-3').find('input[class=chkdisabled]').is(":checked"))
+        {
+            alert("Selecione pelo menos um produto para ativar.");
             return false;
         }
     });
@@ -31,13 +45,6 @@ $(function(){
     })
 */
     // ------------------------------------------------------------------
-    $('#form_obj2').submit(function(){
-        if(!$('#lembrates-1').find('input[class=emailitem]').is(":checked"))
-        {
-            alert("Selecione pelo menos um email para imprimir.");
-            return false;
-        }
-    });
     // ------------------------------------------------------------------
 
     $('#chkallaproved').change(function() {
