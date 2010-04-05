@@ -182,7 +182,10 @@ class Produto extends Controller {
                     rename($arquivo, $arquivo .  '.tmp');
                 }
                 $data += array('file_data' => $this->enviaArquivo());
-                if (count($data['file_data']))  unlink($arquivo . '.tmp');
+                if (count($data['file_data']))  
+                    unlink($arquivo . '.tmp');
+                else
+                    rename($arquivo .  '.tmp', $arquivo);
             }
             $_POST['arquivo']  = $_FILES['arquivo']['name']  ? $_FILES['arquivo']['name']  : $prod['arquivo'];
         }
