@@ -75,7 +75,7 @@ class Admin extends Controller {
             $product = getProductById($id);
             if($product['id_produto']) {
                 if($this->product->reativarProduto($id)){
-                    $texto = sprintf("O produto <strong>%s</strong> foi re-ativado com sucesso!<br />", $product['nome']);
+                    $texto = sprintf("O produto <strong>%s</strong> foi ativado com sucesso!<br />", $product['nome']);
                     $this->messages->add($texto, 'success'); // ser user message
                 }
             }
