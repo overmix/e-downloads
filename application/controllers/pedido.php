@@ -76,9 +76,13 @@ class Pedido extends Controller {
         if ($this->auth->logged()) {
             $data['pedido'] = $this->user->getPedidosById($id);
             $this->validation->pedido_em = formataData('d/m/Y',$data['pedido']['pedido_em']);
-            $this->validation->liberado_em = formataData('d/m/Y',$data['pedido']['liberado_em']);
+            $this->validation->liberado_em = is_date(formataData('d/m/Y',$data['pedido']['liberado_em'])) ?
+                                            formataData('d/m/Y',$data['pedido']['liberado_em']) :
+                                            'dd-mm-aaaa 00:00';
             $this->validation->downloads = $data['pedido']['downloads'];
-            $this->validation->usar_ate = formataData('d/m/Y',$data['pedido']['usar_ate']);
+            $this->validation->usar_ate = is_date(formataData('d/m/Y',$data['pedido']['usar_ate'])) ?
+                                            formataData('d/m/Y',$data['pedido']['usar_ate']) :
+                                            'dd-mm-aaaa';
             $this->validation->limite = $data['pedido']['limite'];
         }
         $this->load->view('admin-pedido', $data);

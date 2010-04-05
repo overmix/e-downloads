@@ -251,7 +251,7 @@ class Admin extends Controller {
      */
     function liberarpedido($id=0) {
         $ids = $id ? array($id) : $this->input->post('edit');
-        if (!$this->auth->logged() OR !isAdmin() OR !count($ids)) {redirect('home'); die();}
+        if (!$this->auth->logged() OR !isAdmin() OR !count($ids)) {redirect('admin'); die();}
 
         foreach($ids as $id)
         {
