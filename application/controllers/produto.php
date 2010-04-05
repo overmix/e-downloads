@@ -172,7 +172,10 @@ class Produto extends Controller {
 
         if(!$file_existente){
             if ($_FILES['arquivo']['name'] AND !$_FILES['arquivo']['error']) {
-                unlink(FCPATH . $this->config->item('upload_path') . 'arquivo/'. $prod['arquivo']);
+                $arquivo = FCPATH . $this->config->item('upload_path') . 'arquivo/'. $prod['arquivo'];
+                if (file_exists($arquivo)) {
+                    unlink($arquivo);
+                }
                 $data += array('file_data'  => $this->enviaArquivo());
             }
             $_POST['arquivo']  = $_FILES['arquivo']['name']  ? $_FILES['arquivo']['name']  : $prod['arquivo'];
