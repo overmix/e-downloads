@@ -250,8 +250,9 @@ class Admin extends Controller {
      * @param int $id Id do usuario
      */
     function liberarpedido($id=0) {
-        if (!$this->auth->logged() OR !isAdmin() OR !$id) {redirect('home'); die();}
         $ids = $id ? array($id) : $this->input->post('edit');
+        if (!$this->auth->logged() OR !isAdmin() OR !count($ids)) {redirect('home'); die();}
+
         foreach($ids as $id)
         {
             if($this->user->liberarPedido($id)){
