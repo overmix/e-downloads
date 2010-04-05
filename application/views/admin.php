@@ -44,7 +44,7 @@
         </form>
     </div>
     <div id="painel-2" class="gallery">
-        <?=form_open("admin/desativar", array('id' => 'form_obj1'));?>
+        <?=form_open("admin/desativarproduto", array('id' => 'form_obj1'));?>
         <input type="submit" id="aprovartodos" value="Desativar todos os selecionados" />
         <?php echo anchor('produto/novo', 'Adicionar novo produto', array('title'=> 'Adicionar novo produto'));?>
         <table>
@@ -80,7 +80,7 @@
         </form>
     </div>
     <div id="painel-3" class="gallery">
-        <?=form_open("admin/reativar", array('id' => 'form_obj1'));?>
+        <?=form_open("admin/reativarproduto", array('id' => 'form_obj1'));?>
         <input type="submit" id="aprovartodos" value="Re-ativar todos os selecionados" />
         <table>
             <thead>

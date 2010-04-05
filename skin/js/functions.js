@@ -38,8 +38,13 @@ $(function(){
             return false;
         }
     });
-
     // ------------------------------------------------------------------
+
+    $('#chkallaproved').change(function() {
+        $('.listimg2').find('input[type=checkbox]').each(function(e){
+            $(this).attr('checked', $('#chkallaproved').is(':checked'));
+        })
+    })
 
     $('#upload_enviar').click(function(){
         $('#enviando').show();
