@@ -8,7 +8,7 @@ class Pedido extends Controller {
         $this->load->config('upload');
 
 		/*-------------validações------------*/
-        $rules['usar_ate']      = "trim|required";
+        $rules['usar_ate']      = "trim|required|callback_isdate";
         $rules['limite']        = "trim|required|callback_isdigit";
 
         $this->validation->set_rules($rules);
@@ -19,14 +19,19 @@ class Pedido extends Controller {
         $fields['limite']       = 'Limite de downloads';
         $this->validation->set_fields($fields);
 
-        $this->validation->set_message('required', 'O campo <i>%s</i> não pode ser vazio');
-        $this->validation->set_message('isdigit', 'O campo <i>%s</i> precisa conter um número inteiro!');
+        $this->validation->set_message('required', ' O campo <i>%s</i> não pode ser vazio');
+        $this->validation->set_message('isdigit', ' O campo <i>%s</i> precisa conter um número inteiro!');
+        $this->validation->set_message('isdate', ' O campo <i>%s</i> precisa conter uma data válida!');
         $this->validation->set_error_delimiters('<small class="error">', '</small>');
     }
 
     function isdigit($int)
     {
         return ctype_digit($int);
+    }
+    function isdate($int)
+    {
+        return is_date($int);
     }
     
     function index ($id) {
