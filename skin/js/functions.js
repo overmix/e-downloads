@@ -15,6 +15,7 @@ $(function(){
             alert("Selecione pelo menos um pedido para liberar.");
             return false;
         }
+        return true
     });
     $('#form_obj2').submit(function(){
         if(!$('#painel-2').find('input[class=chkapproved]').is(":checked"))
@@ -22,6 +23,7 @@ $(function(){
             alert("Selecione pelo menos um produto para desativar.");
             return false;
         }
+        return true
     });
     $('#form_obj3').submit(function(){
         if(!$('#painel-3').find('input[class=chkdisabled]').is(":checked"))
@@ -29,6 +31,7 @@ $(function(){
             alert("Selecione pelo menos um produto para ativar.");
             return false;
         }
+        return true
     });
 /*
     $('#chkallrecents').change(function() {
