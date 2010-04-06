@@ -10,7 +10,7 @@
 |	http://example.com/
 |
 */
-$config['base_url']	= "http://localhost/e-downloads/";
+$config['base_url']	= "{APPURL}";
 
 /*
 |--------------------------------------------------------------------------
