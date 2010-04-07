@@ -1,7 +1,7 @@
 <?php include('header.php') ;?>
 
-<h1>Erro ocurrido!</h1>
+<h1><?php echo $title;?></h1>
 
-<h3><?php echo $mensagem;?></h3>
+<?php echo $mensagem;?>
 
 <?php include('footer.php');?>
