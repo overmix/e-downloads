@@ -43,7 +43,6 @@
             <div id="escolhe">
             <?php echo form_upload('arquivo', 'Selecione um arquivo'); ?>
             </div>
-
             <?=$this->validation->arquivo_error; ?>
         </fieldset>
 

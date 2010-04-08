@@ -1,5 +1,7 @@
 <?php
 class Produto extends Controller {
+    var $allowed = 'exe|tgz|rar|tar|zip|jpg|jpeg|png|gif|bmp|jpe';
+
     function Produto () {
         parent::Controller();
         $this->load->model('product');
@@ -11,15 +13,15 @@ class Produto extends Controller {
 
         $has_responsavel = (bool)(isset($_POST['faixaetaria']) AND $_POST['faixaetaria']=="-");
 
-        $_POST['userfile'] = isset($_FILES['userfile']['name'])?$_FILES['userfile']['name']:'';
-        $_POST['arquivo'] = isset($_FILES['arquivo']['name'])?$_FILES['arquivo']['name']:'';
+        $_POST['userfile']  = isset($_FILES['userfile']['name'])? $_FILES['userfile']['name'] : '';
+        $_POST['arquivo']   = isset($_FILES['arquivo']['name']) ? $_FILES['arquivo']['name']  : '';
 
-		/*-------------validações------------*/
+        /*-------------validações------------*/
         $rules['nome']           = "trim|required|xss_clean";
         $rules['preco']          = "trim|required|callback_isnumeric_check";
         $rules['descricao']      = "trim|required|xss_clean";
-        $rules['userfile']       = "trim|required";
-        $rules['arquivo']        = "trim|required";
+        //$rules['arquivo']        = "trim|callback_allowed_check";
+        //$rules['userfile']       = "trim|callback_allowed_check";
 
         $this->validation->set_rules($rules);
 
@@ -32,12 +34,39 @@ class Produto extends Controller {
 
         $this->validation->set_message('required', 'O campo <i>%s</i> não pode ser vazio');
         $this->validation->set_message('isnumeric_check', 'O campo <i>%s</i> precisa conter um valor numérico válido.');
+        $this->validation->set_message('allowed_check', 'O tipo de arquivo que você está tentando carregar não é permitido.');
         $this->validation->set_error_delimiters('<small class="error">', '</small>');
     }
 
-    function isnumeric_check($digit)
-    {
+    function isnumeric_check($digit) {
         return is_numeric($digit);
+    }
+
+    function allowed_check($file) {
+        $allowed_types  = explode('|', $this->allowed);
+        $image_types    = array('gif', 'jpg', 'jpeg', 'png', 'jpe');
+
+        foreach ($allowed_types as $val){
+            $mime = $this->upload->mimes_types(strtolower($val));
+            
+            if (in_array($val, $image_types)) {
+                $file_type = $_FILES['userfile']['type'];
+            }else{
+                $file_type = $_FILES['arquivo']['type'];
+            }
+            
+            if (is_array($mime)) {
+                if (in_array($file_type, $mime, TRUE)) {
+                    return TRUE;
+                }
+            }
+            else {
+                if ($mime == $file_type) {
+                    return TRUE;
+                }
+            }
+        }
+        return FALSE;
     }
 
     function index ($id=0) {
@@ -51,21 +80,21 @@ class Produto extends Controller {
         $this->load->view('admin-produto', $data);
     }
 
-    function editar($id)
-    {
+    function editar($id) {
         $data = $this->_getDataEdit($id);
         $this->load->view('admin-produto', $data);
     }
 
-    function enviaImagem()
-    {
+    function enviaImagem() {
         $this->upload->set_max_width($this->config->item('max_width'));
         $this->upload->set_max_height($this->config->item('max_width'));
 
+        $this->upload->set_allowed_types($this->allowed);
+
         $upload_path = $this->config->item('upload_path') . 'image/';
         $this->upload->set_upload_path($upload_path);
-        
-        verifyPath($upload_path);
+
+        $path = verifyPath($upload_path);
 
         // Define o nome simplificado da imagem
         if (isset($_FILES['userfile']['name'])) {
@@ -76,8 +105,7 @@ class Produto extends Controller {
             $this->messages->add($this->upload->display_errors('',''));
             return array();
         }
-        else
-        {
+        else {
             $image_data = $this->upload->data();
             $this->_createThumbnail($image_data['file_name']);
             $this->auth->clearCache();
@@ -85,17 +113,17 @@ class Produto extends Controller {
         }
     }
 
-    function enviaArquivo()
-    {
+    function enviaArquivo() {
         $upload_path = $this->config->item('upload_path') . 'arquivo/';
         $this->upload->set_upload_path($upload_path);
 
         $this->upload->set_max_width(0);
         $this->upload->set_max_height(0);
+        $this->upload->set_max_filesize(0);
 
-        $this->upload->set_allowed_types('tgz|rar|tar|zip');
-        
-        verifyPath($upload_path);
+        $this->upload->set_allowed_types($this->allowed);
+
+        $path = verifyPath($upload_path);
 
         // Define o nome simplificado do arquivo
         if (isset($_FILES['arquivo']['name'])) {
@@ -106,16 +134,15 @@ class Produto extends Controller {
             $this->messages->add($this->upload->display_errors('',''));
             return array();
         }
-        else
-        {
+        else {
             $this->auth->clearCache();
             return $this->upload->data();
         }
     }
 
-    function salvar()
-    {
+    function salvar() {
         $data = $this->_getDataNew();
+
         $file_existente = (bool)$this->input->post('file_existente');
 
         if($file_existente) $_POST['arquivo'] = $this->input->post('file_select');
@@ -125,38 +152,44 @@ class Produto extends Controller {
             $data += array('image_data' => $this->enviaImagem());
 
             $imagename = isset($data['image_data']['file_name'])?$data['image_data']['file_name']:'';
-            if(!$file_existente){
+            if(!$file_existente) {
                 $data += array('file_data'  => $this->enviaArquivo());
                 $filename = isset($data['file_data']['file_name'])?$data['file_data']['file_name']:'';
-            }else{
+            }else {
                 $filename = $this->input->post('file_select');
             }
 
             $dados = array (
-                'nome'          =>$this->input->post('nome'),
-                'preco'         =>$this->input->post('preco'),
-                'descricao'     =>$this->input->post('descricao'),
+                    'nome'          =>$this->input->post('nome'),
+                    'preco'         =>$this->input->post('preco'),
+                    'descricao'     =>$this->input->post('descricao'),
             );
             if($imagename) $dados += array('image'=>$imagename);
             if($filename)  $dados += array('arquivo'=>$filename);
+
+            if (!$imagename || !$filename) {
+                redirect('produto/novo');
+                die();
+            }
 
             $dados = $this->input->xss_clean($dados);
 
             $id = $this->product->insertProduct($dados);
             if (!$id) {
                 $this->messages->add('Erro ao gravar dados!', 'error');
-                redirect('produto/novo'); die();
+                redirect('produto/novo');
+                die();
             }
             $msg = sprintf('Produto <span>"%s"</span> adicionando com sucesso!', $dados['nome']);
             $this->messages->add($msg, 'done');
-            redirect('produto/editar/'. $id); die();
+            redirect('produto/editar/'. $id);
+            die();
         }
         $this->load->view('admin-produto', $data);
         //redirect('produto/novo'); die();
     }
 
-    function atualizar($id=0)
-    {
+    function atualizar($id=0) {
         $data = array();
         $dados = array();
 
@@ -164,7 +197,8 @@ class Produto extends Controller {
         if($file_existente) $_POST['arquivo'] = $this->input->post('file_select');
 
         if(!$id) {
-            redirect('admin'); die();
+            redirect('admin');
+            die();
         }
 
         $prod = $this->product->getProductById($id);
@@ -174,37 +208,36 @@ class Produto extends Controller {
             $data += array('image_data' => $this->enviaImagem());
         }
 
-        if(!$file_existente){
+        if(!$file_existente) {
             if ($_FILES['arquivo']['name'] AND !$_FILES['arquivo']['error']) {
                 $data += array('file_data' => $this->enviaArquivo());
-                $_POST['arquivo']  = $data['file_data']['file_name'] ? 
-                    $data['file_data']['file_name']  :
-                    $prod['arquivo'];
-            }else{
-                $_POST['arquivo']  = $_FILES['arquivo']['name'] ? 
-                    $_FILES['arquivo']['name'] :
-                    $prod['arquivo'];
+                $_POST['arquivo']  = $data['file_data']['file_name'] ?
+                        $data['file_data']['file_name']  :
+                        $prod['arquivo'];
+            }else {
+                $_POST['arquivo']  = $_FILES['arquivo']['name'] ?
+                        $_FILES['arquivo']['name'] :
+                        $prod['arquivo'];
             }
         }
-        
+
         $_POST['userfile'] = $_FILES['userfile']['name'] ? $_FILES['userfile']['name'] : $prod['image'];
 
         $data += $this->_getDataEdit($id);
-        
+
         //caso a validação esteja ok
         if ($this->validation->run()) {
             $dados += array (
-                'nome'          =>$this->input->post('nome'),
-                'preco'         =>$this->input->post('preco'),
-                'descricao'     =>$this->input->post('descricao'),
-                'image'         =>$this->input->post('userfile'),
-                'arquivo'       =>$this->input->post('arquivo'),
+                    'nome'          =>$this->input->post('nome'),
+                    'preco'         =>$this->input->post('preco'),
+                    'descricao'     =>$this->input->post('descricao'),
+                    'image'         =>$this->input->post('userfile'),
+                    'arquivo'       =>$this->input->post('arquivo'),
             );
 
             $dados = $this->input->xss_clean($dados);
 
-            if ($id)
-            {
+            if ($id) {
                 $this->product->updateProduct(array('id_produto'=>$id), $dados);
             }
             $msg = sprintf('Produto <span>"%s"</span> foi atualizado com sucesso!', $dados['nome']);
@@ -225,40 +258,38 @@ class Produto extends Controller {
         if(!$this->image_lib->resize()) echo $this->image_lib->display_errors();
     }
 
-    function _getDataNew()
-    {
+    function _getDataNew() {
         $data = array(
-            'logged'        =>$this->auth->logged(),
-            'page_title'    =>'Adicionar produto',
-            'titulo'        =>'ADICIONAR NOVO PRODUTO',
-            'description'   =>'Adicionar novo produto',
-            'action'        =>'produto/salvar',
-            'arquivos'      =>$this->_listaArquivos(),
+                'logged'        =>$this->auth->logged(),
+                'page_title'    =>'Adicionar produto',
+                'titulo'        =>'ADICIONAR NOVO PRODUTO',
+                'description'   =>'Adicionar novo produto',
+                'action'        =>'produto/salvar',
+                'arquivos'      =>$this->_listaArquivos(),
         );
         return $data;
     }
 
-    function _getDataEdit($id)
-    {
+    function _getDataEdit($id) {
         $dados = $this->product->getProductById($id);
 
         $data = array(
-            'logged'        =>$this->auth->logged(),
-            'page_title'    =>'Editar produto',
-            'titulo'        =>'EDITANDO O PRODUTO ' . $dados['nome'],
-            'description'   =>'Editar produto',
-            'action'        =>'produto/atualizar/'.$id,
-            'product'       =>$dados,
-            'arquivos'      =>$this->_listaArquivos(),
+                'logged'        =>$this->auth->logged(),
+                'page_title'    =>'Editar produto',
+                'titulo'        =>'EDITANDO O PRODUTO ' . $dados['nome'],
+                'description'   =>'Editar produto',
+                'action'        =>'produto/atualizar/'.$id,
+                'product'       =>$dados,
+                'arquivos'      =>$this->_listaArquivos(),
         );
         $this->validation->nome         = $dados['nome'];
         $this->validation->preco        = $dados['preco'];
         $this->validation->descricao    = $dados['descricao'];
+    
         return $data;
     }
 
-    function _listaArquivos()
-    {
+    function _listaArquivos() {
         $arquivos = getFilesByPath(uploadPath().'arquivo');
         $arrFile = array(''=>'Selecione...');
         foreach ($arquivos as $item) {

@@ -123,9 +123,9 @@ function imgToThumb($filename) {
  * @param string $filename
  * @return string
  */
-function getExtension($filename) {
+function getExtension($filename, $doted='.') {
     $x = explode('.', $filename);
-    return '.'.end($x);
+    return trim($doted.end($x));
 }
 
 /**
@@ -212,6 +212,24 @@ function deleteImage($filename)
         unlink($file);
     }
 }
+
+function getFileType($file_type){
+    $file_type = preg_replace("/^(.+?);.*$/", "\\1", $file_type);
+    return strtolower($file_type);    
+}
+
+function is_image($path)
+{
+    $images = explode(',',"gif,png,jpg,bmp,jpe,jpeg");
+    foreach ($images as $value) {
+        if (image_type_to_extension(intval(@exif_imagetype($path)), false) != $value)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 function deleteArquivo($filename){
     $file_path = uploadPath() . 'arquivo/';
