@@ -37,10 +37,10 @@
 $active_group = "default";
 $active_record = TRUE;
 
-$db['default']['hostname'] = "localhost";
-$db['default']['username'] = "edownload";
-$db['default']['password'] = "edownload";
-$db['default']['database'] = "edownload";
+$db['default']['hostname'] = "{DBHOST}";
+$db['default']['username'] = "{DBUSER}";
+$db['default']['password'] = "{DBPASS}";
+$db['default']['database'] = "{DBNAME}";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
 $db['default']['pconnect'] = TRUE;
