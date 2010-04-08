@@ -1,0 +1,13 @@
+<div id="error_content">
+Isso significa que os dados informados estão incorretos ou não é possível conectar
+ao servidor do banco de dados {DBHOST}. Isso pode significar também, que o
+servidor de banco de dados da sua hospedagem está fora do ar.
+<ul>
+    <li>Você tem certeza que o nome de usuário e a senha estão corretos?</li>
+    <li>Você tem certeza que digitou o nome do host corretamente?</li>
+    <li>Você tem certeza que o servidor do banco de dados está funcionando?</li>
+</ul>
+Se você não tem certeza sobre o que estes termos significam, provavelmente você
+deve contatar sua hospedagem.Se você ainda precisar de ajuda, você sempre poderá
+visitar a página de suport do  {SUPORTE}.
+</div>

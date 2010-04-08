@@ -6,14 +6,14 @@
     echo '<p>'. $error . '</p>';
 } ;?>
 
-<div class="geral">
+<div id="conf_db">
     <form method="post" action="index.php?passo=2">
     <fieldset>
         <legend>Dados de conexão</legend>
         <p>Abaixo você deve preencher os detalhes de conexão do seu Banco de Dados. Se você não tem certeza, entre em contato com seu provedor.</p>
 
-        <label>URI da aplicação: <span>http://<?php echo $_SERVER['SERVER_NAME'].'/';?></span>
-            <input type="text" name="appurl" title="Url da aplicação" /></label>
+        <label>Email do administrador:
+            <input type="text" name="useremail" title="Email do administrador" /></label>
         <label>Nome do banco de dados:
             <input type="text" name="dbname" title="Nome do banco de dados" /></label>
         <label>Nome do usuário:

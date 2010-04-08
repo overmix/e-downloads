@@ -6,7 +6,7 @@
 define('base_path', dirname(__FILE__).'/');
 $protocol = explode('/', strtolower($_SERVER['SERVER_PROTOCOL']));
 class controller {
-    var $config_sample = '../application/config/config_sample.php';
+    var $config_sample   = '../application/config/config_sample.php';
     var $database_sample = '../application/config/database_sample.php';
     var $link="";
     var $banco = '';
@@ -14,11 +14,13 @@ class controller {
     var $usuario ='';
     var $senha ='';
     var $protocol = '';
+    var $email = '';
 
     private static $instance = null;
 
     function __construct() {
         $this->protocol = $this->__protocol();
+        $this->base_url = $this->define_base_url();
     }
 
     /**
@@ -42,12 +44,16 @@ class controller {
         return true;
     }
 
+    /**
+     * Mostra uma mensagem gernérica de erro para erro de conexão
+     * @param sring $error Título da mensagem de erro
+     */
     function __mostraErro($error) {
         $dados = array(
             '{DBNAME}'  => $this->banco,
             '{DBUSER}'  => $this->usuario,
-            '{DBSERVER}'=> $this->servidor,
-            '{SUPORTE}' => "<a href='http://visie.com.br'>e-Downloads</a>"
+            '{DBHOST}'  => $this->servidor,
+            '{SUPORTE}' => "<a href='http://github.com/pagseguro/e-downloads'>e-Downloads</a>"
         );
         $template = $this->getFile('error_content.txt', $dados);
 
@@ -82,6 +88,10 @@ class controller {
         trigger_error('Deserializing não é permitido.', E_USER_ERROR);
     }
 
+    /**
+     * Verifica se o arquivo de configuração existe
+     * @return bool True caso o arquivo de configuração exista, ou False
+     */
     function hasConfigFile() {
         $sys_config = '../application/config/config.php';
         return (bool)(file_exists($sys_config));
@@ -103,7 +113,7 @@ class controller {
 
     /**
      * Cria o config.php com base_url definida pelo usuário
-     * @param <type> $dados Array associativo cujas chaves correspondem as partes
+     * @param array $dados Array associativo cujas chaves correspondem as partes
      * da string que serão substituídas no config_sample.php pelos valores deste
      * array
      * @return bool Retorna true caso a substituição seja feita com sucesso, ou fase.
@@ -138,28 +148,33 @@ class controller {
 
     /**
      * Define a url base que será utilizada pelo sistema
-     * @param string $uri Url da aplicação, definida pelo usuário
      * @return misc Retorna a url base da aplicação ou false
      */
-    function define_base_url($uri) {
+    function define_base_url() {
+        $uri = explode('/', $_SERVER['PHP_SELF']);
+        if (substr($_SERVER['PHP_SELF'],0,1)=='/') unset($uri[0]);
+        if (count($uri)) unset($uri[count($uri)]);
+        if (count($uri)) unset($uri[count($uri)]);
+        else return false;
 
-        $uri = substr($uri, -1)=='/' ? $uri : $uri . '/';
-        $uri = substr($uri, 0, 1)=='/' ? $uri : '/' . $uri;
-        $uri_verification  = $uri.'install/index.php';
-
-        $cod = rand(0,100);
-        $verify_code = $this->doPost($uri.'install/verify.php','cod='.$cod,$_SERVER['HTTP_HOST']);
-
-        if(trim($verify_code) != md5($cod)) {
-            return false;
-        }
-
+        $uri = '/'.implode('/', $uri).'/';
         return strtolower($this->protocol) . $_SERVER['HTTP_HOST'] . $uri;
+    }
+
+    /**
+     * Email Validation
+     *
+     * @access	public
+     * @param	string
+     * @return	bool
+     */
+    function valid_email($address)
+    {
+        return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
     }
 
     function instalar() {
         $tpedidos = <<<eof
-        DROP TABLE IF EXISTS `pedidos`;
         CREATE TABLE `pedidos` (
           `id_pedido` int(11) NOT NULL AUTO_INCREMENT,
           `id_produto` int(11) NOT NULL,
@@ -174,6 +189,55 @@ class controller {
           PRIMARY KEY (`id_pedido`) USING BTREE
         ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 eof;
+        $query = mysql_query("DROP TABLE IF EXISTS `pedidos`", $this->link);
+        if(!$query) return false;
+        $query = mysql_query($tpedidos, $this->link);
+        if(!$query) return false;
+
+        $tprodutos = <<<eof
+        CREATE TABLE `produtos` (
+          `id_produto` int(11) NOT NULL AUTO_INCREMENT,
+          `nome` varchar(128) NOT NULL,
+          `arquivo` varchar(128) NOT NULL,
+          `preco` float NOT NULL,
+          `image` varchar(128) NOT NULL,
+          `atualizado` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `status` tinyint(1) NOT NULL DEFAULT '1',
+          `descricao` text NOT NULL,
+          PRIMARY KEY (`id_produto`) USING BTREE
+        ) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+eof;
+        $query = mysql_query("DROP TABLE IF EXISTS `produtos`", $this->link);
+        if(!$query) return false;
+        $query = mysql_query($tprodutos, $this->link);
+        if(!$query) return false;
+
+        $tusuarios = <<<eof
+        CREATE TABLE `usuarios` (
+          `id_usuario` int(11) NOT NULL AUTO_INCREMENT,
+          `nome` varchar(128) NOT NULL,
+          `email` varchar(128) NOT NULL,
+          `senha` varchar(128) NOT NULL,
+          `telefone` varchar(128) NOT NULL,
+          `cadastrado_em` datetime NOT NULL,
+          `group` int(11) NOT NULL DEFAULT '0',
+          `controle` varchar(255) NOT NULL,
+          `status` enum('Ativo','Bloqueado') NOT NULL,
+          PRIMARY KEY (`id_usuario`)
+        ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+eof;
+        $query = mysql_query("DROP TABLE IF EXISTS `usuarios`", $this->link);
+        if(!$query) return false;
+        $query = mysql_query($tusuarios, $this->link);
+        if(!$query) return false;
+
+        $query = mysql_query("LOCK TABLES `usuarios` WRITE", $this->link);
+        if(!$query) return false;
+        $query = mysql_query("INSERT INTO `usuarios` VALUES (1,'Administrador','{$this->email}','e10adc3949ba59abbe56e057f20f883e','(xx)0000-00000','0000-00-00 00:00:00',1,'','Ativo')", $this->link);
+        if(!$query) return false;
+        $query = mysql_query("UNLOCK TABLES", $this->link);
+        if(!$query) return false;
+        return true;
     }
 
     function __protocol() {
@@ -201,11 +265,11 @@ eof;
             fwrite($da, $salida);
             while (!feof($da))
                 $response.=fgets($da, 128);
-            $response=split("\r\n\r\n",$response);
+            $response=explode("\r\n\r\n",$response);
             $header=$response[0];
             $responsecontent=$response[1];
             if(!(strpos($header,"Transfer-Encoding: chunked")===false)) {
-                $aux=split("\r\n",$responsecontent);
+                $aux=explode("\r\n",$responsecontent);
                 for($i=0;$i<count($aux);$i++)
                     if($i==0 || ($i%2==0))
                         $aux[$i]="";

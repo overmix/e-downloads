@@ -1,0 +1,8 @@
+<div id="error_content">
+<ul>
+    <li>Você tem certeza que o nome de usuário e a senha estão corretos?</li>
+    <li>Você tem certeza que digitou o nome do host corretamente?</li>
+    <li>Você tem certeza que o servidor do banco de dados está funcionando?</li>
+</ul>
+
+</div>

@@ -3,8 +3,8 @@
 <h1><?php echo $title;?></h1>
 
 <div>
-    <p>Tudo certo! Você conseguiu terminar essa parte da instalação.
-        O WordPress agora pode se comunicar com seu Banco de Dados. Se estiver pronto…</p>
+    <p>Obrigado por adquirir e instalar o nosso sistema de downloads.</p>
+    <p><a href="<?php echo $redirect ?>">Clique aqui para começar a utilizar a aplicação</a></p>
 </div>
 
 <?php include('footer.php');?>
