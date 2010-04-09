@@ -92,8 +92,8 @@ class controller {
      * Verifica se o arquivo de configuração existe
      * @return bool True caso o arquivo de configuração exista, ou False
      */
-    function hasConfigFile() {
-        $sys_config = '../application/config/config.php';
+    function hasConfigFile($filename) {
+        $sys_config = '../application/config/'.$filename;
         return (bool)(file_exists($sys_config));
     }
 
@@ -233,11 +233,12 @@ eof;
 
         $query = mysql_query("LOCK TABLES `usuarios` WRITE", $this->link);
         if(!$query) return false;
-        $query = mysql_query("INSERT INTO `usuarios` VALUES (1,'Administrador','{$this->email}','e10adc3949ba59abbe56e057f20f883e','(xx)0000-00000','0000-00-00 00:00:00',1,'','Ativo')", $this->link);
+        $senha = $this->geraSenha(6);
+        $query = mysql_query("INSERT INTO `usuarios` VALUES (1,'Administrador','{$this->email}','".md5($senha)."','(xx)0000-00000','0000-00-00 00:00:00',1,'','Ativo')", $this->link);
         if(!$query) return false;
         $query = mysql_query("UNLOCK TABLES", $this->link);
         if(!$query) return false;
-        return true;
+        return $senha;
     }
 
     function __protocol() {
@@ -245,7 +246,19 @@ eof;
         return $protocol[0] . '://';
     }
 
+    /**
+     * geraSenha() Gera uma senha aleatória com 6 digitos.
+     * @param int $digit número de digitos pegos do rash
+     * @return string Retorna uma senha aleatória gerada a partir de um número randômico
+     */
+    function geraSenha($digit = 6) {
+        $controle = rand(0,1000000000);
+        return substr(md5($controle), 0, $digit);
+    }
 
+function geraToken($digit = 15){
+	return substr(hash('sha512', uniqid()), 0 , $digit);
+}
 
     function doPost($uri,$postdata,$host) {
         $da = fsockopen($host, 80, $errno, $errstr);

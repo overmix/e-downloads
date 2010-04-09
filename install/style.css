@@ -24,9 +24,14 @@ fieldset {
 #geral{
     margin:50px auto;
     width: 600px;
-    font:12px Arial,Helvetica,sans-serif;
+    font:18px Arial,Helvetica,sans-serif;
 }
 
 #geral  #conf_db label {
     display: block;
+}
+
+#conf_db span.alert {
+    font:italic 18px Times New Roman, Arial, Verdana;
+    color: red;
 }

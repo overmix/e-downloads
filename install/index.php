@@ -21,7 +21,7 @@ switch ($_GET['passo']) {
             );
 
             // tenta gravar no arquivo de configuração
-            if ($ins->makeConfigFile($dados)) {
+            if ($ins->hasConfigFile('config.php') OR $ins->makeConfigFile($dados)) {
                 // mostra o mensagem do início da instalação, com o botão para instalar
                 $data = array('title'=>'e-Downloads');
                 $ins->loadTemplate('conf_db', $data);
@@ -29,12 +29,14 @@ switch ($_GET['passo']) {
                 // carrega o config_sample numa textarea e pedo para o próprio usuário gravar as informações
                 $data = array(
                     'title'         =>'e-Downloads',
-                    'title_msg'     =>'Não foi possível gravar o arquivo database.php',
-                    'content_config'=> htmlentities($ins->getFile($ins->config_sample, $dados)),
-                    'config_msg'    =>"Você pode criar o config.php manualmente e colar o seguinte texto nele.<br />
-                        O arquivo config.php deve ficar dentro da pasta 'application/config/' da sua aplicação.",
+                    'title_msg'     =>'Desculpe, não foi possível gravar o arquivo config.php',
+                    'content_config'=> html_entity_decode($ins->getFile($ins->config_sample, $dados)),
+                    'config_msg'    =>"Você pode criar o config.php manualmente
+e colar o seguinte texto nele.<br />O arquivo config.php deve ficar dentro da
+pasta 'application/config/' de sua aplicação.",
                     'redirect'      =>"index.php?passo=1",
                 );
+
                 $ins->loadTemplate('conf_manual', $data);
             }
             $data = array('title'=>'Iniciando a instalação');
@@ -60,7 +62,8 @@ switch ($_GET['passo']) {
 
         // se conectou, vai para a aplicação
         if ($ins->link) {
-            if($ins->instalar()){
+            $senha = $ins->instalar();
+            if($senha){
                 $dados = array(
                     '{DBHOST}'  =>  $ins->servidor,
                     '{DBUSER}'  =>  $ins->usuario,
@@ -69,19 +72,23 @@ switch ($_GET['passo']) {
 
                 );
                 // tenta gravar no arquivo de configuração
-                if ($ins->makeDatabaseFile($dados)) {
+                if ($ins->hasConfigFile('database.php') OR $ins->makeDatabaseFile($dados)) {
                     // mostra o mensagem do início da instalação, com o botão para instalar
                     $data = array(
                         'title'     =>'e-Downloads',
                         'redirect'  =>$ins->base_url,
+                        'email'     => $ins->email,
+                        'senha'     => $senha,
                     );
                     $ins->loadTemplate('conf_finalizar', $data);
                 }else{
                     // carrega o config_sample numa textarea e pedo para o próprio usuário gravar as informações
                     $data = array(
                         'title'         =>'e-Downloads',
-                        'title_msg'     =>'Não foi possível gravar o arquivo database.php',
-                        'content_config'=> htmlentities($ins->getFile($ins->database_sample, $dados)),
+                        'title_msg'     =>'Estamos quase lá! porém ainda temos
+uma pendência. Apesar de conseguirmos conectar ao banco com sucesso, não foi possível gravar as informações
+necessárias no arquivo database.php',
+                        'content_config'=> html_entity_decode($ins->getFile($ins->database_sample, $dados)),
                         'config_msg'    =>"Você pode criar o database.php manualmente e colar o seguinte texto nele.<br />
                             O arquivo database.php deve ficar dentro da pasta 'application/config/' da sua aplicação.",
                         'redirect'      =>"index.php?passo=2",
@@ -97,18 +104,7 @@ switch ($_GET['passo']) {
             }
         }
         break;
-    case '3':
-        $ins->instalar();
-        if (!$ins->hasConfigFile()) {
-            $data = array('title'=>'e-Downloads', 
-                'title'=>'e-Downloads',
-                'mensagem'=> 'Não foi possível localizar o arquivo config.php');
-            $ins->loadTemplate('erro', $data);
-        }
-
-        $ins->instalar();
-        break;
-    
+   
     default:
         $data = array('title'=>'Iniciando a instalação');
         $ins->loadTemplate('conf_home', $data);
