@@ -3,6 +3,7 @@
 *.webprj
 *.swp
 config.php
+database.php
 code/.htaccess
 nbproject/*
 uploads/arquivo/*

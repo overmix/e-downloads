@@ -4,8 +4,7 @@
 
 <fieldset>
     <legend><?=$titulo;?></legend>
-    <a href="<?=getProductUrlById($product['id_produto']);?>" rel="prettyPhoto">
-        <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="foto 1" title="<?=$product['nome']?>" /></a>
+    <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="foto 1" title="<?=$product['nome']?>" />
     <p>Nome: <?=$product['nome']?></p>
     <p>Preço: <?=$product['preco']?></p>
     <p>Descrição: <?=getDescription($product['id_produto'])?></p>
