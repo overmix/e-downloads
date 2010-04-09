@@ -180,6 +180,7 @@ function &get_config()
 	{
 		if ( ! file_exists(APPPATH.'config/config'.EXT))
 		{
+            header('location: http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'install');
 			exit('The configuration file config'.EXT.' does not exist.');
 		}
 
@@ -187,6 +188,7 @@ function &get_config()
 
 		if ( ! isset($config) OR ! is_array($config))
 		{
+            header('location: http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'install');
 			exit('Your config file does not appear to be formatted correctly.');
 		}
 
