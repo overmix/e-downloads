@@ -14,7 +14,9 @@
 root { 
     display: block;
 }
-
+img {
+	border:none;
+}
 label{
     display:block;
 }
