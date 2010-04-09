@@ -27,6 +27,7 @@ function uploadUrl() {
  */
 function logged ($dados=FALSE) {
     $ci =& get_instance();
+
     if ($dados) {
         if( (bool)(isset($ci->session->userdata['email']) AND $ci->session->userdata['email']) )
             return (object)$ci->session->userdata;

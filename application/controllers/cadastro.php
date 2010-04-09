@@ -7,7 +7,7 @@ class Cadastro extends Controller {
         $this->load->model('user');
         $has_responsavel = (bool)(isset($_POST['faixaetaria']) AND $_POST['faixaetaria']=="-");
 
-		/*-------------validações------------*/
+        /*-------------validações------------*/
         $rules['nome']              = "trim|required|xss_clean";
         $rules['email']             = "trim|required|valid_email|callback_email_check";
         $rules['senha']             = "trim|required|matches[senha2]|min_length[5]|max_length[12]";
@@ -41,17 +41,26 @@ class Cadastro extends Controller {
         //caso a validação esteja ok
         if ($this->validation->run()) {
             $dados = array (
-                'nome'              =>$this->input->post('nome'),
-                'email'             =>$this->input->post('email'),
-                'senha'             =>md5($this->input->post('senha')),
-                'telefone'          =>$this->input->post('telefone'),
+                    'nome'              =>$this->input->post('nome'),
+                    'email'             =>$this->input->post('email'),
+                    'senha'             =>md5($this->input->post('senha')),
+                    'telefone'          =>$this->input->post('telefone'),
             );
 
             $dados = $this->input->xss_clean($dados);
 
             if ($this->user->insertUser($dados)) {
-                $this->session->set_userdata('email', $dados['email']);
-                redirect('home'); die();
+                $user = $this->user->getUserDataByEmail($dados['email']);
+                $session_data = array(
+                        'email'     => $user['email'],
+                        'logado'    => true,
+                        'nome'      => $user['nome'],
+                        'ativo'     => $user['status'],
+                );
+                $this->session->set_userdata($session_data);
+
+                redirect('home');
+                die();
             }
             $this->messages->add('Erro ao gravar dados!');
         }
@@ -62,7 +71,7 @@ class Cadastro extends Controller {
     function email_check($str) {
         return !$this->user->checaUser(array('email'=>$str));
     }
-    
+
     function cpf_check($cpf) {
         return $this->validar->cpfcnpj($cpf);
     }
