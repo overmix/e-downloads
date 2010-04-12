@@ -515,6 +515,22 @@ function geraNovaSenha() {
 }
 
 /**
+ *    Send the headers necessary to ensure the page is
+ *    reloaded on every request. Otherwise you could be
+ *    scratching your head over out of date test data.
+ *    @access public
+ */
+function sendNoCacheHeaders() {
+    if (!headers_sent()) {
+        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+    }
+}
+
+/**
  * verifyPath() Verifica se uma datermidada url existe, caso não exista ele cria e atribue permissões
  * @param string $folder Caminho a ser criado Ex.: /home/ldmotta/abc
  * @param string $mode Valor da permissao, default 0777
@@ -552,3 +568,4 @@ function getAllMedia()
     $ci =& get_instance();
     return base_url().$ci->config->item('upload_path'). $media['media_category']."/". $media['id_usuario'] .'/'. $media['media_url'];
 }
+

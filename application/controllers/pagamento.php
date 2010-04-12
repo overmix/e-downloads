@@ -6,6 +6,11 @@ class Pagamento extends Controller {
     }
 
     function index ($produto=0) {
+        session_start();
+        if($_SESSION['posted']){
+            redirect('home');
+        }
+        $_SESSION['posted']=1;
 
     	if (!$this->auth->logged())
         {
