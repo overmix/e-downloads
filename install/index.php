@@ -31,9 +31,8 @@ switch ($_GET['passo']) {
                     'title'         =>'e-Downloads',
                     'title_msg'     =>'Desculpe, não foi possível gravar o arquivo config.php',
                     'content_config'=> html_entity_decode($ins->getFile($ins->config_sample, $dados)),
-                    'config_msg'    =>"Você pode criar o config.php manualmente
-e colar o seguinte texto nele.<br />O arquivo config.php deve ficar dentro da
-pasta 'application/config/' de sua aplicação.",
+                    'config_msg'    =>"Você pode criar o config.php manualmente dentro da
+pasta 'application/config/' de sua aplicação, e colar o seguinte texto nele:",
                     'redirect'      =>"index.php?passo=1",
                 );
 
@@ -87,10 +86,11 @@ pasta 'application/config/' de sua aplicação.",
                         'title'         =>'e-Downloads',
                         'title_msg'     =>'Estamos quase lá! porém ainda temos
 uma pendência. Apesar de conseguirmos conectar ao banco com sucesso, não foi possível gravar as informações
-necessárias no arquivo database.php',
+necessárias no arquivo database.php.',
                         'content_config'=> html_entity_decode($ins->getFile($ins->database_sample, $dados)),
-                        'config_msg'    =>"Você pode criar o database.php manualmente e colar o seguinte texto nele.<br />
-                            O arquivo database.php deve ficar dentro da pasta 'application/config/' da sua aplicação.",
+                        'config_msg'    =>"Você pode criar o database.php manualmente dentro da pasta <br />
+'application/config/' da sua aplicação, e colar o seguinte texto nele:<br />
+                            .",
                         'redirect'      =>"index.php?passo=2",
                     );
                     $ins->loadTemplate('conf_manual', $data);

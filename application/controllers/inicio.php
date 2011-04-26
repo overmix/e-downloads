@@ -1,6 +1,5 @@
 <?php
 class Inicio extends Controller {
-
     function Inicio() {
         parent::Controller();
         $this->load->library('validation');
