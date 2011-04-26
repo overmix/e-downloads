@@ -15,10 +15,12 @@ class controller {
     var $senha ='';
     var $protocol = '';
     var $email = '';
-
+    var $sessID = '';
+    
     private static $instance = null;
 
     function __construct() {
+        session_start();
         $this->protocol = $this->__protocol();
         $this->base_url = $this->define_base_url();
     }
@@ -256,9 +258,9 @@ eof;
         return substr(md5($controle), 0, $digit);
     }
 
-function geraToken($digit = 15){
-	return substr(hash('sha512', uniqid()), 0 , $digit);
-}
+    function geraToken($digit = 15){
+	    return substr(hash('sha512', uniqid()), 0 , $digit);
+    }
 
     function doPost($uri,$postdata,$host) {
         $da = fsockopen($host, 80, $errno, $errstr);
@@ -289,8 +291,38 @@ function geraToken($digit = 15){
                 $responsecontent=implode("",$aux);
             }//if
             return chop($responsecontent);
-    }//else
-}//function-doPost
+        }//else
+    }//function-doPost
+
+
+    /*
+     * set_session() adiciona valores a sessão passada como array
+     * 
+     *
+     */
+    function set_session($sess_data){
+        //if(empty($this->sessID)) session_start() or exit(basename(__FILE__).'(): Could not start session');     
+        foreach ($sess_data as $k=>$v):
+            $_SESSION[$k] = $v;
+        endforeach;
+    }
+    /*
+     * sessdata() retorna um valor contido na sessão $item
+     */
+    function get_session($item){
+        //if(empty($this->sessID)) session_start() or exit(basename(__FILE__).'(): Could not start session');     
+        if(isset($_SESSION[$item])){
+            return $_SESSION[$item];
+        }        
+    }
+    
+    function destroy_session(){
+        return session_destroy();
+    }
+    
+    function clear_session(){
+        $_SESSION = array();
+    }
 
 
 }

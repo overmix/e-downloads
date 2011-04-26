@@ -539,6 +539,7 @@ function verifyPath($folder, $mode=0777)
 {
     $pasta = '';
     $f = explode('/', $folder);
+
     foreach ($f as $p)
     {
         $pasta .= $p . '/';

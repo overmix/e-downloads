@@ -35,7 +35,6 @@ switch ($_GET['passo']) {
 pasta 'application/config/' de sua aplicação, e colar o seguinte texto nele:",
                     'redirect'      =>"index.php?passo=1",
                 );
-
                 $ins->loadTemplate('conf_manual', $data);
             }
             $data = array('title'=>'Iniciando a instalação');
@@ -43,17 +42,26 @@ pasta 'application/config/' de sua aplicação, e colar o seguinte texto nele:",
         }
         break;    
     case '2':
-        if($_SERVER['REQUEST_METHOD']=='POST'){
-            $ins->servidor  = $_POST['dbserver'];
-            $ins->usuario   = $_POST['dbuser'];
-            $ins->senha     = $_POST['dbpass'];
-            $ins->banco     = $_POST['dbname'];
-            $ins->email     = $_POST['useremail'];
-
-            if (!$ins->valid_email($ins->email)) {
-                $data = array('title'=>'e-Downloads', 'mensagem'=> 'O email digitado não é válido!');
-                $ins->loadTemplate('erro', $data);
-            }
+        if($_SERVER['REQUEST_METHOD']=='POST'){            
+            $connection_data =  array(
+                'dbserver'  =>  $_POST['dbserver'],
+                'dbuser'    =>  $_POST['dbuser'],
+                'dbpass'    =>  $_POST['dbpass'],
+                'dbname'    =>  $_POST['dbname'],
+                'useremail' =>  $_POST['useremail'],
+            );
+            $ins->set_session($connection_data);            
+        }        
+        
+        $ins->servidor  = $ins->get_session('dbserver');
+        $ins->usuario   = $ins->get_session('dbuser');
+        $ins->senha     = $ins->get_session('dbpass');
+        $ins->banco     = $ins->get_session('dbname');
+        $ins->email     = $ins->get_session('useremail');
+        
+        if (!$ins->valid_email($ins->email)) {
+            $data = array('title'=>'e-Downloads', 'mensagem'=> 'O email digitado não é válido!');
+            $ins->loadTemplate('erro', $data);
         }
 
         // Tenta conectar com o banco criado
@@ -74,8 +82,8 @@ pasta 'application/config/' de sua aplicação, e colar o seguinte texto nele:",
                 if ($ins->hasConfigFile('database.php') OR $ins->makeDatabaseFile($dados)) {
                     // mostra o mensagem do início da instalação, com o botão para instalar
                     $data = array(
-                        'title'     =>'e-Downloads',
-                        'redirect'  =>$ins->base_url,
+                        'title'     => 'e-Downloads',
+                        'redirect'  => $ins->base_url,
                         'email'     => $ins->email,
                         'senha'     => $senha,
                     );

@@ -92,10 +92,11 @@ class Produto extends Controller {
         $this->upload->set_allowed_types($this->allowed);
 
         $upload_path = $this->config->item('upload_path') . 'image/';
+
         $this->upload->set_upload_path($upload_path);
 
         $path = verifyPath($upload_path);
-
+        
         // Define o nome simplificado da imagem
         if (isset($_FILES['userfile']['name'])) {
             $_FILES['userfile']['name'] = simplificaString($_FILES['userfile']['name'], '_') ;
@@ -144,9 +145,9 @@ class Produto extends Controller {
         $data = $this->_getDataNew();
 
         $file_existente = (bool)$this->input->post('file_existente');
-
+        
         if($file_existente) $_POST['arquivo'] = $this->input->post('file_select');
-
+        
         //caso a validação esteja ok
         if ($this->validation->run()) {
             $data += array('image_data' => $this->enviaImagem());
