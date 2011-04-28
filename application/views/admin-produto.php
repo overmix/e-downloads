@@ -3,6 +3,7 @@
 <h1><?=$titulo;?></h1>
 
 <h2><?=output_msg($type = null);?></h2>
+
 <script type="text/javascript">
     jQuery(function(){
         $('#menoridade').click(function(){$('#dadosresponsavel').slideDown()})
@@ -47,7 +48,7 @@
         </fieldset>
 
         <div class="botoes">
-            <?=anchor(base_url() . "admin", "Voltar para a administração", array('class'=>'btn'));?>
+            <?php echo anchor("admin", "Voltar para a administração", array('title'=>'Voltar','class'=>'btn'));?>
             <button type="submit">Cadastrar</button>
         </div>
 

@@ -7,8 +7,11 @@
     <ul>
     <?php foreach ($downloads as $product): ?>
         <li>
-            <a href="<?=base_url().'downloads/get/'.$product['id_produto'];?>" rel="prettyPhoto">
-                <img src="<?=getThumbUrlById($product['id_produto']);?>" alt="foto 1" title="<?=$product['nome']?>" /></a>
+            <?php 
+            echo anchor('downloads/get/'.$product['id_produto'],
+            sprintf("<img src='%s' alt='%s' />",getThumbUrlById($product['id_produto']), $product['image']),
+            array('title'=>$product['nome'],'rel'=>"prettyPhoto"));
+            ?>                                
             <p>Nome: <?=$product['nome']?></p>
             <p>Descrição: <?=getDescription($product['id_produto'])?></p>
             <p><?php echo anchor('downloads/get/'.$product['id_produto'], 'Download', array('title'=>'Efetuar download'));?></p>

@@ -47,6 +47,7 @@ function getProductUrlById($id) {
     $product = getProductById($id);
     return base_url().$ci->config->item('upload_path') . 'image/' . $product['image'];
 }
+
 /**
  * Seta a sessão last_uri com o valor passado em $uri
  * @param string $uri Uri de redirecionamento
@@ -231,7 +232,6 @@ function is_image($path)
     return true;
 }
 
-
 function deleteArquivo($filename){
     $file_path = uploadPath() . 'arquivo/';
     $file    = $file_path . $filename;
@@ -239,17 +239,17 @@ function deleteArquivo($filename){
         unlink($file);
     }
 }
-/*
-* Função que formata de acordo com o formato da data passada.
-*
-* @uses echo formataData('01/02/2010'); // output 2010-02-01
-* @uses echo formataData('2010-02-01'); // output 01/02/2010
-*
-* @param string $date
-* @return void
-* @author Igor Escobar
-*/
 
+/*
+ * Função que formata de acordo com o formato da data passada.
+ *
+ * @uses echo formataData('01/02/2010'); // output 2010-02-01
+ * @uses echo formataData('2010-02-01'); // output 01/02/2010
+ *
+ * @param string $date
+ * @return void
+ * @author Igor Escobar
+ */
 function dateDb($date){
     return (strstr($date, '-')) ? implode('/', array_reverse(explode('-',$date))) : implode('-', array_reverse(explode('/',$date)));
 }
@@ -389,8 +389,6 @@ function atualizaStatusLembrete($id)
     $result = $ci->db->update('lembrete', array('status'=>1), array('lembrete_id'=>$id));
     return $ci->db->affected_rows();
 }
-
-
 
 /**
  * retorna o caminho absoluto da imagem no servidor
@@ -539,9 +537,7 @@ function verifyPath($folder, $mode=0777)
 {
     $pasta = '';
     $f = explode('/', $folder);
-
-    foreach ($f as $p)
-    {
+    foreach ($f as $p) {
         $pasta .= $p . '/';
         if(!is_dir($pasta))
         {

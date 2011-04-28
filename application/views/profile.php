@@ -17,14 +17,15 @@ else:
                 <span>Nome:</span>
                 <strong class="obj" style="display:none"><input type="text" name="nome" value="<?=$this->validation->nome;?>" /></strong>
                 <strong class="txt"><?=$this->validation->nome;?></strong>
-                <a href="#" title=" " class="edit">editar</a><?=$this->validation->nome_error; ?>
+                <?php echo anchor("#", "editar", array('title'=>'Editar','class'=>'edit')) ?><?=$this->validation->nome_error; ?>
             </li>
             <?php if(!isAdmin()):?>
             <li>
                 <span>Telefone:</span>
                 <strong class="obj" style="display:none"><input type="text" name="telefone" value="<?=$this->validation->telefone;?>" class="vTel" /></strong>
                 <strong class="txt"><?=$this->validation->telefone;?></strong>
-                <a href="#" title=" " class="edit">editar</a><?=$this->validation->telefone_error; ?></li>
+                <?php echo anchor("#", "editar", array('title'=>'Editar','class'=>'edit')) ?><?=$this->validation->telefone_error; ?>
+            </li>
             <?php endif;?>
         </ul>
         <?=$this->output->get_output();?>

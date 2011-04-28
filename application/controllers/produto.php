@@ -84,7 +84,7 @@ class Produto extends Controller {
         $data = $this->_getDataEdit($id);
         $this->load->view('admin-produto', $data);
     }
-
+    
     function enviaImagem() {
         $this->upload->set_max_width($this->config->item('max_width'));
         $this->upload->set_max_height($this->config->item('max_width'));
@@ -94,19 +94,19 @@ class Produto extends Controller {
         $upload_path = $this->config->item('upload_path') . 'image/';
 
         $this->upload->set_upload_path($upload_path);
-
+        
+        // Verifica a existencia da pasta uploads/image, e cria caso não exista
         $path = verifyPath($upload_path);
         
         // Define o nome simplificado da imagem
         if (isset($_FILES['userfile']['name'])) {
             $_FILES['userfile']['name'] = simplificaString($_FILES['userfile']['name'], '_') ;
         }
-
+        
         if (!$this->upload->do_upload()) {
-            $this->messages->add($this->upload->display_errors('',''));
+            $this->messages->add($this->upload->display_errors());
             return array();
-        }
-        else {
+        } else {
             $image_data = $this->upload->data();
             $this->_createThumbnail($image_data['file_name']);
             $this->auth->clearCache();
@@ -132,7 +132,7 @@ class Produto extends Controller {
         }
 
         if (!$this->upload->do_upload('arquivo')) {
-            $this->messages->add($this->upload->display_errors('',''));
+            $this->messages->add($this->upload->display_errors());
             return array();
         }
         else {
@@ -143,12 +143,14 @@ class Produto extends Controller {
 
     function salvar() {
         $data = $this->_getDataNew();
-
+        
+        // Verifica se é arquivo existente ou novo
         $file_existente = (bool)$this->input->post('file_existente');
         
+        // Se for de arquivo existente, pega do select buttom
         if($file_existente) $_POST['arquivo'] = $this->input->post('file_select');
         
-        //caso a validação esteja ok
+        // Caso a validação dos campos obrigatórios esteja ok
         if ($this->validation->run()) {
             $data += array('image_data' => $this->enviaImagem());
 
@@ -161,9 +163,9 @@ class Produto extends Controller {
             }
 
             $dados = array (
-                    'nome'          =>$this->input->post('nome'),
-                    'preco'         =>$this->input->post('preco'),
-                    'descricao'     =>$this->input->post('descricao'),
+                    'nome'        =>$this->input->post('nome'),
+                    'preco'       =>$this->input->post('preco'),
+                    'descricao'   =>$this->input->post('descricao'),
             );
             if($imagename) $dados += array('image'=>$imagename);
             if($filename)  $dados += array('arquivo'=>$filename);
@@ -248,15 +250,23 @@ class Produto extends Controller {
         //redirect('produto/editar/'.$id); die();
     }
 
+    /*
+     * Blibliotecas suportadas GD, GD2, ImageMagick, NetPBM
+     * Default GD
+     */
     function _createThumbnail($filename) {
-        $config['image_library'] = 'gd2';
-        $config['source_image'] = $this->upload->get_upload_path() . $filename;
-        $config['create_thumb'] = TRUE;
-        $config['maintain_ratio'] = FALSE;
-        $config['width'] = 100;
-        $config['height'] = 100;
+        $config['image_library']    = 'GD';
+        $config['source_image']     = $this->upload->get_upload_path() . $filename;
+        $config['create_thumb']     = TRUE;
+        $config['maintain_ratio']   = FALSE;
+        $config['width']            = 100;
+        $config['height']           = 100;
+        
         $this->load->library('image_lib', $config);
-        if(!$this->image_lib->resize()) echo $this->image_lib->display_errors();
+        
+        if(!$this->image_lib->resize()){
+            $this->messages->add($this->upload->display_errors(), "error");
+        }
     }
 
     function _getDataNew() {

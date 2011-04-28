@@ -86,12 +86,14 @@ $(function(){
             $(this).parent().find('.obj').show();
             $(this).attr('class', 'canceledit');
             $(this).html('cancelar');
+            $(this).attr('title','Cancelar');
         }else{
             $(this).parent().find('.obj').hide();
             $(this).parent().find('.txt').show();
             $(this).parent().find('input').val($(this).parent().find('.txt').html())
             $(this).attr('class', 'edit')
             $(this).html('editar');
+            $(this).attr('title','Editar');
         }
         return false;
     });

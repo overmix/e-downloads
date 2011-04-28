@@ -1,9 +1,10 @@
 <?php
 include 'controller.php';
 $ins = controller::getInstance();
+$not_writable = $ins->verify_requeriments();
 
 if (!isset($_GET['passo'])) {
-    $data = array('title'=>'Iniciando a instalação');
+    $data = array('title'=>'Iniciando a instalação', 'mensagem'=>$not_writable);
     $ins->loadTemplate('conf_home', $data);
     die();
 }
@@ -11,6 +12,14 @@ if (!isset($_GET['passo'])) {
 switch ($_GET['passo']) {
     case '1':
         $url = $ins->define_base_url();
+        if($not_writable){
+            $data = array(
+                'title'     => "e-Downloads", 
+                'mensagem'  => $not_writable
+                );
+            $ins->loadTemplate('conf_home', $data);        
+        }
+        
         if (!$url) {
             $data = array('title'=>'e-Downloads', 'mensagem'=> "A URI <b>{$_POST['appurl']}</b> não é válida ou não per
                 tence ao diretório da aplicação.");

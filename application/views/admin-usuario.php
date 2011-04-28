@@ -13,13 +13,14 @@
                     Nome:
                     <strong class="obj" style="display:none"><input type="text" name="nome" value="<?=$this->validation->nome;?>" /></strong>
                     <strong class="txt"><?=$this->validation->nome;?></strong>
-                    <a href="#" title=" " class="edit">editar</a><?=$this->validation->nome_error; ?>
+                    <?php echo anchor("#",'editar',array('title'=>'Editar','class'=>"edit")) ?><?=$this->validation->nome_error; ?>
                 </li>
                 <li>
                     Telefone:
                     <strong class="obj" style="display:none"><input type="text" name="telefone" value="<?=$this->validation->telefone;?>" /></strong>
                     <strong class="txt"><?=$this->validation->telefone;?></strong>
-                    <a href="#" title=" " class="edit">editar</a><?=$this->validation->telefone_error; ?></li>
+                    <?php echo anchor("#",'editar',array('title'=>'Editar','class'=>"edit")) ?><?=$this->validation->telefone_error; ?>
+                </li>
             </ul>
 
             <?=$this->output->get_output();?>
@@ -41,7 +42,7 @@
             </fieldset>
 
             <div class="botoes">
-                <?=anchor(base_url() . "admin", "Voltar para a administração", array('class'=>'btn'));?>
+                <?php echo anchor('admin','Voltar para a administração',array('title'=>'Voltar para a administração','class'=>'btn'));?>
                 <button type="submit" class="btn">Salvar alterações</button>
             </div>
             

@@ -12,9 +12,9 @@
         <legend>Dados de conexão</legend>
         <p>Abaixo você deve preencher os detalhes de conexão do seu Banco de Dados.</p>
         <p>Se você não tem certeza, entre em contato com seu provedor.</p>
-        <p><span class="alert">A T E N Ç Ã O - Não se esqueça que este procedimento apagará todas
-            as informações exestentes no banco de dados informado abaixo.</span></p>
-
+        <p>
+        <div class='error message'>A T E N Ç Ã O - Não se esqueça que este procedimento apagará todas
+            as informações exestentes no banco de dados informado abaixo.</div>
         <label>Email do administrador:
             <input type="text" name="useremail" title="Email do administrador" /></label>
         <label>Nome do banco de dados:

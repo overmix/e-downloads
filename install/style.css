@@ -35,3 +35,23 @@ fieldset {
     font:italic 18px Times New Roman, Arial, Verdana;
     color: red;
 }
+
+div.message{
+    padding: 5px;
+    border-collapse: collapse;
+}
+div.error{
+    border: 1px solid #c0605a;
+    background:#fcdbf6;
+}
+div.done{
+    border: 1px solid #60cf5a;
+    background:#e4f9de;
+}
+div.message li {
+    list-style-position: inside;
+}
+
+
+
+

@@ -12,3 +12,5 @@ $config['dados_pgs'] = array(
     'email' => 'seu_email@xyz.com.br',
     'token' => '123456'
 );
+
+

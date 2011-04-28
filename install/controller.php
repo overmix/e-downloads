@@ -3,7 +3,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-define('base_path', dirname(__FILE__).'/');
+error_reporting(0);
 $protocol = explode('/', strtolower($_SERVER['SERVER_PROTOCOL']));
 class controller {
     var $config_sample   = '../application/config/config_sample.php';
@@ -16,13 +16,15 @@ class controller {
     var $protocol = '';
     var $email = '';
     var $sessID = '';
+    var $base_path = "";
     
     private static $instance = null;
 
     function __construct() {
         session_start();
-        $this->protocol = $this->__protocol();
-        $this->base_url = $this->define_base_url();
+        $this->protocol  = $this->__protocol();
+        $this->base_url  = $this->define_base_url();
+        $this->base_path = dirname(__FILE__).'/';    
     }
 
     /**
@@ -106,7 +108,7 @@ class controller {
      * para o templete requisitado.
      */
     function loadTemplate($_request_template, $data=array()) {
-        if (file_exists(base_path.$_request_template.'.php')) {
+        if (file_exists($this->base_path . $_request_template.'.php')) {
             extract($data);
             include($_request_template.'.php');
             die();
@@ -324,5 +326,30 @@ eof;
         $_SESSION = array();
     }
 
+    function verify_requeriments(){
+        $file_path  = dirname($this->base_path) . "/uploads/arquivo";
+        $image_path = dirname($this->base_path) . "/uploads/image";
+        $lista      = array();
+        if (!is_writable($file_path)){
+            array_push($lista,"<li><span class='alert'>Dê permissão de escrita na pasta uploads/arquivo</span></li>");
+        }
+        if (!is_writable($image_path)){
+            array_push($lista,"<li><span class='alert'>Dê permissão de escrita na pasta uploads/image</span></li>");
+        }
+        
+        if (!function_exists("gd_info")) {        
+            array_push($lista,"<li><span class='alert'>Instale a biblioteca GD para php.</span></li>");
+        }
 
+        if (count($lista)){
+            return "Você precisas dar permissão de escrita nos diretórios listados abaixo:<br /><ul>". implode("",$lista) ."</ul>";
+        }    
+    }
 }
+
+/*
+function exception_handler($exception) {
+    echo "Uncaught exception: " , $exception->getMessage(), "\n";
+}
+set_exception_handler('exception_handler');    
+*/
