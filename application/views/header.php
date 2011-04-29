@@ -1,12 +1,11 @@
 <?php
 session_start();
 $_SESSION['posted']=0;
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="pt-BR">
+?><!DOCTYPE HTML>
+<html lang="pt-BR">
     <head>
         <title><?php echo $page_title;?></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>skin/css/style.css" media="screen" charset="utf-8" />
         <script type="text/javascript" src="<?=base_url();?>skin/js/jquery-1.3.2.min.js"></script>
         <script type="text/javascript" language="javascript" src="<?=base_url();?>skin/js/functions.js"></script>

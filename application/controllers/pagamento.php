@@ -19,7 +19,8 @@ class Pagamento extends Controller {
             redirect('inicio'); die();
         }
         $produto = $produto ? $produto : $this->session->userdata('produto');
-        
+
+        // Isso mesmo, o pedido entra bloqueado até que haja uma confirmação de pagamento!
         $dados = array(
             'id_produto'    => $produto,
             'id_usuario'    => $this->user->getUserIdByEmail($this->auth->userMail()),
@@ -38,6 +39,7 @@ class Pagamento extends Controller {
                 'preco'     => $dadosProd['preco'],
                 'produto'   => $produto,
             ));
+
             $dados = array('form_pgs' => $form_pgs[1]);
             $this->product->updatePedido(array('id_pedido'=> $pedido), $dados);
 
@@ -50,9 +52,11 @@ class Pagamento extends Controller {
                 'admin_email'       => $this->config->item('admin_email'),
                 'url'               => base_url() . 'downloads',
             );
+
             $msgUser = loadTemplate(TEMPLATEPATH . 'views/template_compra.html', $content);
 
             $content = array(
+                'codigo'            => $pedido,
                 'user_nome'         => $dadosUser['nome'],
                 'prod_nome'         => $dadosProd['nome'],
                 'prod_preco'        => 'R$'.$dadosProd['preco'].',00',

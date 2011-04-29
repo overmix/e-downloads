@@ -1,6 +1,6 @@
 <?php
 class Pedido extends Controller {
-    function Pedido () {
+    function Pedido() {
         parent::Controller();
         $this->load->library('validation');
         $this->load->model('user');

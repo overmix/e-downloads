@@ -199,5 +199,33 @@ class Product extends Model {
         $return = $this->db->insert('pedidos', $dados);
         return $return ? $this->db->insert_id() : FALSE;
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

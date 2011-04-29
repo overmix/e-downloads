@@ -6,10 +6,8 @@ header('cache-control: NO-CACHE');
 <head>
     <title></title>
 </head><body>
-
 <?php echo $form_pgs; ?>
 </form>
-
 <div id="geral">Aguarde... redirecionando para o PagSeguro...</div>
 <script language="javascript" type="text/javascript">
     document.forms[0].target='_parent';

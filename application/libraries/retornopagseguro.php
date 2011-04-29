@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 if (!defined('TOKEN')) define ('TOKEN', '');
 
@@ -158,7 +158,7 @@ class RetornoPagSeguro {
         fclose ($tipoEnvio[2]);
       }
     }
-    if ($confirma && function_exists('retorno_automatico')) {
+    if ($confirma && method_exists('Retorno','retorno_automatico')) {
       $itens = array (
                 'VendedorEmail', 'TransacaoID', 'Referencia', 'TipoFrete',
                 'ValorFrete', 'Anotacao', 'DataTransacao', 'TipoPagamento',
@@ -181,7 +181,7 @@ class RetornoPagSeguro {
           'ProdExtras'      => (double) (str_replace(',', '.', $post["ProdExtras_{$i}"])),
         );
       }
-      retorno_automatico (
+      Retorno::retorno_automatico (
         $post['VendedorEmail'], $post['TransacaoID'], $post['Referencia'], $post['TipoFrete'],
         $post['ValorFrete'], $post['Anotacao'], $post['DataTransacao'], $post['TipoPagamento'],
         $post['StatusTransacao'], $post['CliNome'], $post['CliEmail'], $post['CliEndereco'],
@@ -192,11 +192,5 @@ class RetornoPagSeguro {
     return $confirma;
   }
 }
-
-if ($_POST) {
-  RetornoPagSeguro::verifica($_POST);
-  die();
-}
-
 
 ?>
