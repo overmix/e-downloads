@@ -171,7 +171,7 @@ class pgs {
         $_input = '  <input type="hidden" name="%s" value="%s"  />';
         $_form = array();
         if ($args['open_form'])
-            $_form[] = '<form target="pagseguro" action="https://pagseguro.uol.com.br/security/webpagamentos/webpagto.aspx" method="post">';
+            $_form[] = '<form target="pagseguro" action="https://pagseguro.uol.com.br/checkout/checkout.jhtml" method="post">';
         foreach ($this->_config as $key=>$value)
             $_form[] = sprintf ($_input, $key, $value);
         foreach ($this->_cliente as $key=>$value)
