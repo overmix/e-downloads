@@ -8,7 +8,7 @@ $config['admin_name']  = 'e-Downloads';
 /*
  * Define se a liberação dos pedidos será através do retorno_automatico
  */
-$config['usar_retorno_automatico']  = false;
+$config['usar_retorno']  = false;
 
 /*
  * Seu email no pagseguro
