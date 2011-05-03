@@ -238,7 +238,7 @@ eof;
         $query = mysql_query("LOCK TABLES `usuarios` WRITE", $this->link);
         if(!$query) return false;
         $senha = $this->geraSenha(6);
-        $query = mysql_query("INSERT INTO `usuarios` VALUES (1,'Administrador','{$this->email}','".md5($senha)."','(xx)0000-00000','0000-00-00 00:00:00',1,'','Ativo')", $this->link);
+        $query = mysql_query("INSERT INTO `usuarios` VALUES (1,'Administrador','{$this->email}','".md5($senha)."','(xx)0000-00000','0000-00-00 00:00:00',1,'first_login','Ativo')", $this->link);
         if(!$query) return false;
         $query = mysql_query("UNLOCK TABLES", $this->link);
         if(!$query) return false;
@@ -331,10 +331,10 @@ eof;
         $image_path = dirname($this->base_path) . "/uploads/image";
         $lista      = array();
         if (!is_writable($file_path)){
-            array_push($lista,"<li><span class='alert'>Dê permissão de escrita na pasta uploads/arquivo</span></li>");
+            array_push($lista,"<li>Dê permissão de escrita na pasta <em>raiz_da_aplicacao</em>/uploads/arquivo</li>");
         }
         if (!is_writable($image_path)){
-            array_push($lista,"<li><span class='alert'>Dê permissão de escrita na pasta uploads/image</span></li>");
+            array_push($lista,"<li>Dê permissão de escrita na pasta <em>raiz_da_aplicacao</em>/uploads/image</li>");
         }
         
         if (!function_exists("gd_info")) {        

@@ -4,7 +4,7 @@
 
 <div>
     <p>Obrigado por adquirir e instalar o nosso sistema de downloads.</p>
-    <p>Abaixo estão os dados do administrador, copie a senha gerada e não se
+    <p>Abaixo estão os dados de acesso a área administrativa, copie a senha gerada automaticamente, e não se
     esqueça de troca-la logo após efetuar o login.</p>
     <div class='done message'>
     <ul>

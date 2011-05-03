@@ -34,11 +34,10 @@ class Admin extends Controller {
         if (!$this->auth->logged() OR !isAdmin()) {redirect('home'); die();}
         $data = array('logged'=>$this->auth->logged(),'page_title'=>'Administração', 'titulo'=>'Administração e-Downloads', 'description'=>'Administração geral');
         $data['pedidos'] = $this->product->getAllPedidos();
-        //echo "<pre>"; print_r($data); echo "</pre>"; die('fim');
+
         $data['produtos_ativos'] = $this->product->getAllProductsByStatus(1);
         $data['produtos_inativos'] = $this->product->getAllProductsByStatus(0);
         $data['usuarios'] = $this->user->getAllUsers(array('group'=>0));
-        //$data['usuarios_inativos'] = $this->product->getAllProductsByStatus(0);
 
         $this->load->view('admin', $data);
     }

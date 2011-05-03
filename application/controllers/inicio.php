@@ -29,8 +29,8 @@ class Inicio extends Controller {
         $data = array('logged'=>$this->auth->logged(),'page_title'=>'Login', 'titulo'=>'Efetuar login');
         if ($this->validation->run()) {
             $dados = array (
-                    'email'	=>$this->input->post('email'),
-                    'senha'	=>md5($this->input->post('senha'))
+                'email'	=>$this->input->post('email'),
+                'senha'	=>md5($this->input->post('senha'))
             );
             $dados = $this->input->xss_clean($dados);
 
@@ -44,8 +44,21 @@ class Inicio extends Controller {
                 );
                 $this->session->set_userdata($session_data);
                 if(isAdmin()) {
-                    redirect('admin');
-                    die();
+                    if($user['controle']=='first_login'){
+                        $this->messages->add(
+                            'Verificamos que esta é a primeira vez que está acessando o sistema, você precisa trocar a senha neste momento.', 
+                            'warning');
+                        
+                        // Atualiza o controle de promeiro acesso                            
+                        $dados = array ('controle' => "");
+                        $this->user->updateUser($dados);
+
+                        redirect('profile');
+                        die();
+                    }else{
+                        redirect('admin');
+                        die();
+                    }
                 }else {
                     redirect(getLastUri());
                     die();

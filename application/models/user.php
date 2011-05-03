@@ -33,7 +33,6 @@ class User extends Model {
     function updateUser($dados, $where=array()) {
         $where = count($where) ? $where : array("email" => (string)$this->auth->userMail());
         $this->db->update('usuarios', $dados, $where);
-        //$this->session->set_userdata('email', $this->dadosUser['email']);
         return $this->db->affected_rows();
     }
 

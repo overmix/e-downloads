@@ -4,7 +4,9 @@
 
 <div>
     <p><?php echo $title_msg;?></p>
-    <p><?php echo $config_msg; ?></p>
+    
+    <div class="error message"><?php echo $config_msg; ?></div>
+    
     <textarea cols="80" rows="14"><?php echo $content_config;?></textarea>
     <p>Depois que você fizer isso clique em "Continuar."</p>
     <a href="<?php echo $redirect; ?>">Continuar</a>

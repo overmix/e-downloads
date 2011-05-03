@@ -38,10 +38,12 @@ switch ($_GET['passo']) {
                 // carrega o config_sample numa textarea e pedo para o próprio usuário gravar as informações
                 $data = array(
                     'title'         =>'e-Downloads',
-                    'title_msg'     =>'Desculpe, não foi possível gravar o arquivo config.php',
+                    'title_msg'     =>"Desculpe, não foi possível gravar o arquivo config.php por falta de permissão. 
+                    Mas não se preocupe, é muito simples resolver isso.",
                     'content_config'=> html_entity_decode($ins->getFile($ins->config_sample, $dados)),
-                    'config_msg'    =>"Você pode criar o config.php manualmente dentro da
-pasta 'application/config/' de sua aplicação, e colar o seguinte texto nele:",
+                    'config_msg'    =>"<ul>
+                        <li>Crie o arquivo config.php manualmente dentro da pasta '<em>raiz_da_aplicacao</em>/application/config/', e cole nele o código abaixo:</li>
+                        </ul>",
                     'redirect'      =>"index.php?passo=1",
                 );
                 $ins->loadTemplate('conf_manual', $data);
@@ -92,7 +94,7 @@ pasta 'application/config/' de sua aplicação, e colar o seguinte texto nele:",
                     // mostra o mensagem do início da instalação, com o botão para instalar
                     $data = array(
                         'title'     => 'e-Downloads',
-                        'redirect'  => $ins->base_url,
+                        'redirect'  => $ins->base_url.'index.php/inicio',
                         'email'     => $ins->email,
                         'senha'     => $senha,
                     );
@@ -102,12 +104,12 @@ pasta 'application/config/' de sua aplicação, e colar o seguinte texto nele:",
                     $data = array(
                         'title'         =>'e-Downloads',
                         'title_msg'     =>'Estamos quase lá! porém ainda temos
-uma pendência. Apesar de conseguirmos conectar ao banco com sucesso, não foi possível gravar as informações
-necessárias no arquivo database.php.',
+uma pendência. Apesar de conseguirmos conectar ao banco de dados com sucesso, não foi possível gravar as informações
+necessárias no arquivo database.php, por falta de permissão.<br />Siga a informação abaixo e seja feliz novamente:',
                         'content_config'=> html_entity_decode($ins->getFile($ins->database_sample, $dados)),
-                        'config_msg'    =>"Você pode criar o database.php manualmente dentro da pasta <br />
-'application/config/' da sua aplicação, e colar o seguinte texto nele:<br />
-                            .",
+                        'config_msg'    =>"<ul>
+                            <li>Crie o arquivo database.php manualmente dentro da pasta '<em>raiz_da_aplicacao</em>/application/config/', e cole nele o código abaixo:</li>
+                            </ul>",
                         'redirect'      =>"index.php?passo=2",
                     );
                     $ins->loadTemplate('conf_manual', $data);
