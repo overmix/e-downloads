@@ -1,0 +1,24 @@
+--
+-- e-Downloads v1.0.3
+--
+
+Instalação
+* Para as instruções a seguir, estamos assumindo que você já tenha um domínio
+retistrado, e uma base de dados acessível.
+
+1° Após descompactar os arquivos do pacote no seu domínio, acesse a url
+http://seu_dominio/install
+2° Um assistente irá ajudá-lo em todo o processo de instalação
+
+=====================================
+Changelog
+=====================================
+
+Cobredireto - v0.1.0.3
+03/05/2011:
+- Alteramos os textos informativos para melhorar o entendimento por parte do usuário
+- Trocamos o tipo do campo de senha do banco de dados para "password" 
+- Adicionamos a "class" para exibir a informação como destaque
+
+
+
