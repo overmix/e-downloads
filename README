@@ -2,6 +2,10 @@
 -- e-Downloads v1.0.3
 --
 
+O e-Downloads é um sistema completo de gerenciamento e venda de downloads que
+utiliza o meio de pagamento PagSeguro por padrão. O e-Downloads não necessita de
+nenhum outro framework para funcionar.
+
 Instalação
 * Para as instruções a seguir, estamos assumindo que você já tenha um domínio
 retistrado, e uma base de dados acessível.
