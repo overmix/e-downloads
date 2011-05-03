@@ -13,6 +13,8 @@ retistrado, e uma base de dados acessível.
 1° Após descompactar os arquivos do pacote no seu domínio, acesse a url
 http://seu_dominio/install
 2° Um assistente irá ajudá-lo em todo o processo de instalação
+3° Configure seus dados do PagSeguro, editando o arquivo "userconf.php" em
+seu_dominio/applications/config/
 
 =====================================
 Changelog
