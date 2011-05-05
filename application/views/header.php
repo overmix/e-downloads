@@ -36,6 +36,8 @@ $_SESSION['posted']=0;
             <li><?php echo anchor('cadastro', 'Cadastre-se', array('title'=>'Cadastre-se'));?></li>
 			<?php endif;?>
             <li><?php echo anchor('inicio', 'Login', array('title'=>'Login')); ?></li>
-            <li><?php echo anchor('inicio/sair', 'Sair', array('title'=>'Sair do sistema'));?></li>
+            <?php if(logged()):?>
+                <li><?php echo anchor('inicio/sair', 'Sair', array('title'=>'Sair do sistema'));?></li>
+            <?php endif;?>
         </ul>
 

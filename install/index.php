@@ -3,6 +3,8 @@ include 'controller.php';
 $ins = controller::getInstance();
 $not_writable = $ins->verify_requeriments();
 
+$root_path = dirname(dirname(__FILE__)).'/';
+
 if (!isset($_GET['passo'])) {
     $data = array('title'=>'Iniciando a instalação', 'mensagem'=>$not_writable);
     $ins->loadTemplate('conf_home', $data);
@@ -98,6 +100,8 @@ switch ($_GET['passo']) {
                         'email'     => $ins->email,
                         'senha'     => $senha,
                     );
+                    chmod($root_path . "application/config/", 0755);
+                    
                     $ins->loadTemplate('conf_finalizar', $data);
                 }else{
                     // carrega o config_sample numa textarea e pedo para o próprio usuário gravar as informações

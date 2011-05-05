@@ -13,8 +13,9 @@
         <p>Abaixo você deve preencher os detalhes de conexão à sua base de dados.</p>
         <p>Se você não tem certeza, entre em contato com seu provedor e solicite os dados de conexão.</p>
         <p>
-        <div class='error message'>A T E N Ç Ã O - Não se esqueça que este procedimento apagará todas
-            as informações exestentes no banco de dados informado abaixo.</div>
+        <div class='error message'>A T E N Ç Ã O - Não se esqueça que este procedimento apagará as tabelas 
+        "pedidos, produtos e usuarios", existentes no banco de dados informado abaixo, estas tabelas serão
+         recriadas para serem utilizadas pelo e-Downloads.</div>
         <label>Email do administrador:
             <input type="text" name="useremail" title="Email do administrador" /></label>
         <label>Nome do banco de dados:

@@ -10,22 +10,25 @@ class Trocasenha extends Controller {
 		$this->load->model('user');
 
 		/*-------------validações------------*/
-        $rules['email']		= "trim|required|xss_clean|valid_email|callback_email_check";
+        //$rules['email']		= "trim|required|xss_clean|valid_email|callback_email_check";
         $requerido = $this->pass_check($this->input->post('senha2'));
-        $rules['senha']		= "trim".$requerido;
+        $rules['senha']		= "trim|min_length[5]|max_length[12]".$requerido;
         $requerido = $this->pass_check($this->input->post('senha'));
         $rules['senha2']	= "trim".$requerido;
+        $rules['uid']       = "callback_verify_uid";
 		$this->validation->set_rules($rules);
 
-		$fields['email']    = 'Email';
+		//$fields['email']    = 'Email';
 		$fields['senha']    = 'Senha';
         $fields['senha2']	= 'Confirmação';
 		$this->validation->set_fields($fields);
 
 		$this->validation->set_message('required', 'O campo <i>%s</i> não pode ser vazio');
-        $this->validation->set_message('email_check', 'Email não cadastrado');
-		$this->validation->set_message('valid_email', 'O campo <i>%s</i> não contém um email válido');
+        //$this->validation->set_message('email_check', 'Email não cadastrado');
+		//$this->validation->set_message('valid_email', 'O campo <i>%s</i> não contém um email válido');
         $this->validation->set_message('matches', 'Senhas não conferem!');
+        $this->validation->set_message('min_length', 'O campo <i>%s</i> deve ter pelo menos 5 caracteres de comprimento.');
+        $this->validation->set_message('max_length', 'O campo <i>%s</i> não pode exceder 12 caracteres de comprimento.');        
 		$this->validation->set_error_delimiters('<div class="error">', '</div>');
 	}
 	
@@ -72,7 +75,7 @@ class Trocasenha extends Controller {
     }
 
     function email_check($str) {
-        return $this->user->checaUser(array('email'=>$str));
+        return (bool)$this->user->checaUser(array('email'=>$str));
     }
 
     function matches($str){

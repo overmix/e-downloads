@@ -84,7 +84,7 @@ class Esqueci extends Controller {
             try {
                 if($this->email->send()){
                     //$this->user->alteraSenha($myEmail, $novasenha);
-                    $this->messages->add('A senha foi enviada para o email indicado.', 'done');
+                    $this->messages->add('As informações de troca de senha foram enviadas para o email indicado.', 'done');
                 }
             } catch (Exception $e) {
                 $this->messages->add("Erro ao enviar email.", 'error');
