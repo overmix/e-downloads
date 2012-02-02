@@ -8,7 +8,7 @@ nenhum outro framework para funcionar.
 
 Instalação
 * Para as instruções a seguir, estamos assumindo que você já tenha um domínio
-retistrado, e uma base de dados acessível.
+registrado, e uma base de dados acessível.
 
 1° Após descompactar os arquivos do pacote no seu domínio, acesse a url
 http://seu_dominio/install
